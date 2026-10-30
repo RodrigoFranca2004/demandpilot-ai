@@ -19,9 +19,9 @@ def build_calendar_features(
     )
 
     for weekday in range(1, 7):
-        features[f"weekday_{weekday}"] = (parsed_dates.dt.weekday == weekday).astype(
-            int
-        )
+        features[f"weekday_{weekday}"] = (
+            parsed_dates.dt.day_of_week == weekday
+        ).astype(int)
 
     return features
 

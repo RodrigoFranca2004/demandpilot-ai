@@ -257,6 +257,29 @@ Predictions are constrained to non-negative values.
 
 The evaluation uses a fixed forecast origin without updating the model with test-period sales.
 
+### Forecast Service
+
+The forecasting service compares two prediction methods:
+
+- Seven-day moving average baseline.
+- Linear Regression with calendar-based features.
+
+Both methods are evaluated on the same chronological holdout period using MAE and WAPE.
+
+The method with the lowest MAE is selected. The baseline is preferred when both methods achieve the same MAE.
+
+Future forecasts use all available historical observations after evaluation.
+
+The service provides:
+
+- Selected forecasting method.
+- Baseline and regression evaluation metrics.
+- Evaluation date range.
+- Historical data cutoff date.
+- Daily demand forecasts for a configurable horizon.
+
+Forecasts start on the day following the latest available sales observation.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
