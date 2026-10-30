@@ -156,6 +156,69 @@ uv run pytest -q
 
 All demo data is synthetic and does not represent real restaurant transactions.
 
+## API Endpoints
+
+The backend provides REST endpoints for accessing restaurant products and historical sales.
+
+### List Products
+
+```http
+GET /products
+```
+
+Returns the available products.
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Classic Burger"
+  }
+]
+```
+
+### Get Product Sales
+
+```http
+GET /products/{product_id}/sales
+```
+
+Returns historical daily sales for a specific product, ordered by date.
+
+Optional query parameters:
+
+- `start_date`: Start of the date range (YYYY-MM-DD).
+- `end_date`: End of the date range (YYYY-MM-DD).
+
+Example:
+
+```http
+GET /products/1/sales?start_date=2026-01-01&end_date=2026-01-31
+```
+
+Example response:
+
+```json
+[
+  {
+    "sale_date": "2026-01-01",
+    "quantity": 20
+  },
+  {
+    "sale_date": "2026-01-02",
+    "quantity": 25
+  }
+]
+```
+
+An unknown product returns HTTP 404. Invalid date parameters or reversed date ranges return HTTP 422.
+
+Interactive API documentation is available at:
+
+http://127.0.0.1:8000/docs
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
