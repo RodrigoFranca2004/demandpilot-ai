@@ -5,6 +5,9 @@ description = "REST API for DemandPilot AI"
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "fastapi",
+    "psycopg[binary]>=3.3.6",
+    "pydantic-settings>=2.16.2",
+    "sqlalchemy>=2.1.6",
     "uvicorn[standard]",
 ]
 
