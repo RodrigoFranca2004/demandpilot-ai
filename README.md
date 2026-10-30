@@ -122,6 +122,40 @@ docker compose --env-file apps/api/.env down
 
 The database uses a persistent Docker volume. Stopping the service does not delete its data.
 
+## Demo Data
+
+The application uses reproducible synthetic restaurant data for development and demonstration.
+
+The dataset includes:
+
+- One fictional restaurant.
+- Five products and ten ingredients.
+- Product recipes and initial inventory quantities.
+- 180 days of historical sales per product.
+- Weekly demand patterns, gradual growth, and controlled random variation.
+
+### Generate Demo Data
+
+Ensure PostgreSQL is running and migrations have been applied.
+
+From the API directory:
+
+```powershell
+uv run python -m app.demo_data
+```
+
+The generator uses a fixed random seed and creates historical sales ending on the day before its first execution.
+
+Running the command again does not duplicate existing demo data.
+
+### Run Tests
+
+```powershell
+uv run pytest -q
+```
+
+All demo data is synthetic and does not represent real restaurant transactions.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
