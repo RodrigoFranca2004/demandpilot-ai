@@ -219,6 +219,20 @@ Interactive API documentation is available at:
 
 http://127.0.0.1:8000/docs
 
+## Demand Forecasting
+
+The forecasting module uses historical daily sales to estimate future product demand.
+
+### Baseline
+
+The initial baseline predicts demand using the average of the last seven available sales observations.
+
+It supports configurable forecast horizons and lookback windows.
+
+The baseline serves as a reference for evaluating future Machine Learning models.
+
+Model training, temporal validation, and evaluation metrics will be introduced in subsequent development steps.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
