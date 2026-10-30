@@ -85,6 +85,29 @@ The example credentials are intended for local development only.
 docker compose --env-file apps/api/.env up -d db
 ```
 
+### Apply database migrations
+
+From the repository root, start PostgreSQL:
+
+```powershell
+docker compose --env-file apps/api/.env up -d db
+```
+
+Then, from the API directory:
+
+```powershell
+cd apps/api
+uv run alembic upgrade head
+```
+
+To check the current migration revision:
+
+```powershell
+uv run alembic current
+```
+
+Database schema changes are managed through Alembic migrations.
+
 ### Check database status
 
 ```powershell
