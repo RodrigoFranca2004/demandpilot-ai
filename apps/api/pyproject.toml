@@ -1,0 +1,9 @@
+[project]
+name = "demandpilot-api"
+version = "0.1.0"
+description = "REST API for DemandPilot AI"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+]

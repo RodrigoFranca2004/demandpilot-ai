@@ -35,6 +35,34 @@ The application will use reproducible synthetic sales data to forecast product d
 
 The application is being developed incrementally. Setup instructions, architecture details, and demonstration examples will be added as features are implemented.
 
+## Running the API
+
+### Requirements
+
+- Python 3.13
+- uv
+
+### Setup
+
+From the repository root:
+
+```powershell
+cd apps/api
+uv sync
+```
+
+### Start the development server
+
+```powershell
+uv run uvicorn app.main:app --reload
+```
+
+The API will be available at:
+
+- API: http://127.0.0.1:8000
+- Health check: http://127.0.0.1:8000/health
+- Interactive API documentation: http://127.0.0.1:8000/docs
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
