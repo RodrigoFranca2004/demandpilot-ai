@@ -1,0 +1,51 @@
+name: Backend CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+      - 'feature/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Lint and Test
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: apps/api
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10.3.2
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Check lint
+        run: uv run --locked ruff check .
+
+      - name: Check formatting
+        run: uv run --locked ruff format --check .
+
+      - name: Run tests
+        run: uv run --locked pytest -q
