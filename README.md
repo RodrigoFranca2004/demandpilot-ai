@@ -233,6 +233,30 @@ The baseline serves as a reference for evaluating future Machine Learning models
 
 Model training, temporal validation, and evaluation metrics will be introduced in subsequent development steps.
 
+### Machine Learning Model
+
+The initial Machine Learning model uses scikit-learn's Linear Regression to predict daily product demand.
+
+Features include:
+
+- Day index to represent historical trends.
+- Day-of-week indicators to capture weekly demand patterns.
+
+### Evaluation
+
+Model evaluation uses a chronological 80/20 train-test split.
+
+The model is trained only on historical observations preceding the test period.
+
+Evaluation metrics:
+
+- MAE (Mean Absolute Error).
+- WAPE (Weighted Absolute Percentage Error).
+
+Predictions are constrained to non-negative values.
+
+The evaluation uses a fixed forecast origin without updating the model with test-period sales.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
