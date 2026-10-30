@@ -63,6 +63,42 @@ The API will be available at:
 - Health check: http://127.0.0.1:8000/health
 - Interactive API documentation: http://127.0.0.1:8000/docs
 
+## Running PostgreSQL
+
+### Requirements
+
+- Docker Engine with Docker Compose
+
+### Setup
+
+From the repository root, create a local environment file:
+
+```powershell
+Copy-Item apps/api/.env.example apps/api/.env
+```
+
+The example credentials are intended for local development only.
+
+### Start PostgreSQL
+
+```powershell
+docker compose --env-file apps/api/.env up -d db
+```
+
+### Check database status
+
+```powershell
+docker compose --env-file apps/api/.env ps
+```
+
+### Stop PostgreSQL
+
+```powershell
+docker compose --env-file apps/api/.env down
+```
+
+The database uses a persistent Docker volume. Stopping the service does not delete its data.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
