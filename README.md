@@ -331,6 +331,29 @@ It supports:
 
 Inventory calculations are deterministic and do not rely on Generative AI.
 
+### Forecast-Based Inventory Analysis
+
+The inventory service combines Machine Learning demand forecasts with restaurant recipes and current inventory records.
+
+It performs the following steps:
+
+1. Retrieve products and their historical sales.
+2. Generate demand forecasts for the requested planning period.
+3. Round daily product forecasts up to whole production units.
+4. Calculate ingredient requirements across all products.
+5. Compare required quantities with available inventory.
+6. Identify ingredient shortages and return structured results.
+
+The service supports planning horizons from 1 to 30 days.
+
+Planning starts on the current date by default and can be configured explicitly. Predictions for dates before the planning period are excluded.
+
+The latest historical sales date is included in the results to provide context about data freshness.
+
+Inventory calculations assume the recorded stock is available for the entire planning period, without additional purchases or stock movements.
+
+The service uses deterministic calculations and does not rely on Generative AI.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
