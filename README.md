@@ -219,6 +219,104 @@ Interactive API documentation is available at:
 
 http://127.0.0.1:8000/docs
 
+## Demand Forecasting
+
+The forecasting module uses historical daily sales to estimate future product demand.
+
+### Baseline
+
+The initial baseline predicts demand using the average of the last seven available sales observations.
+
+It supports configurable forecast horizons and lookback windows.
+
+The baseline serves as a reference for evaluating future Machine Learning models.
+
+Model training, temporal validation, and evaluation metrics will be introduced in subsequent development steps.
+
+### Machine Learning Model
+
+The initial Machine Learning model uses scikit-learn's Linear Regression to predict daily product demand.
+
+Features include:
+
+- Day index to represent historical trends.
+- Day-of-week indicators to capture weekly demand patterns.
+
+### Evaluation
+
+Model evaluation uses a chronological 80/20 train-test split.
+
+The model is trained only on historical observations preceding the test period.
+
+Evaluation metrics:
+
+- MAE (Mean Absolute Error).
+- WAPE (Weighted Absolute Percentage Error).
+
+Predictions are constrained to non-negative values.
+
+The evaluation uses a fixed forecast origin without updating the model with test-period sales.
+
+### Forecast Service
+
+The forecasting service compares two prediction methods:
+
+- Seven-day moving average baseline.
+- Linear Regression with calendar-based features.
+
+Both methods are evaluated on the same chronological holdout period using MAE and WAPE.
+
+The method with the lowest MAE is selected. The baseline is preferred when both methods achieve the same MAE.
+
+Future forecasts use all available historical observations after evaluation.
+
+The service provides:
+
+- Selected forecasting method.
+- Baseline and regression evaluation metrics.
+- Evaluation date range.
+- Historical data cutoff date.
+- Daily demand forecasts for a configurable horizon.
+
+Forecasts start on the day following the latest available sales observation.
+
+### Forecasting API
+
+Demand forecasts and model evaluation metrics are available through REST endpoints.
+
+#### Get Product Forecast
+
+```http
+GET /products/{product_id}/forecast?horizon=7
+```
+
+Returns the selected forecasting method and daily demand predictions.
+
+The `horizon` parameter is optional and accepts values from 1 to 30 days.
+
+#### Get Model Metrics
+
+```http
+GET /products/{product_id}/forecast/metrics
+```
+
+Returns:
+
+- Selected forecasting method.
+- Evaluation date range.
+- Baseline MAE and WAPE.
+- Linear Regression MAE and WAPE.
+
+Both methods are evaluated on the same chronological holdout period.
+
+The method with the lowest MAE is selected, with the baseline preferred in case of a tie.
+
+Forecasts start on the day following the latest available historical observation, which may differ from the current date.
+
+Interactive documentation is available at:
+
+http://127.0.0.1:8000/docs
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
