@@ -354,6 +354,39 @@ Inventory calculations assume the recorded stock is available for the entire pla
 
 The service uses deterministic calculations and does not rely on Generative AI.
 
+### Inventory Analysis API
+
+The application provides a REST endpoint for forecast-based inventory risk analysis.
+
+```http
+GET /restaurants/{restaurant_id}/inventory/analysis
+```
+
+Optional query parameters:
+
+- `start_date`: Planning start date (YYYY-MM-DD). Defaults to the current date.
+- `horizon`: Number of planning days, from 1 to 30. Defaults to 1.
+
+Example:
+
+```http
+GET /restaurants/1/inventory/analysis?start_date=2026-10-31&horizon=1
+```
+
+The response includes:
+
+- Planning start and end dates.
+- Forecasted production quantities for each product.
+- Selected forecasting method and latest historical sales date.
+- Required and available quantities for each ingredient.
+- Estimated shortages and inventory risk indicators.
+
+Ingredient quantities are serialized as decimal strings to preserve precision.
+
+An unknown restaurant returns HTTP 404. Invalid planning parameters or insufficient data return HTTP 422.
+
+The analysis is read-only and does not modify inventory quantities.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
