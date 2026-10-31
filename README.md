@@ -280,6 +280,43 @@ The service provides:
 
 Forecasts start on the day following the latest available sales observation.
 
+### Forecasting API
+
+Demand forecasts and model evaluation metrics are available through REST endpoints.
+
+#### Get Product Forecast
+
+```http
+GET /products/{product_id}/forecast?horizon=7
+```
+
+Returns the selected forecasting method and daily demand predictions.
+
+The `horizon` parameter is optional and accepts values from 1 to 30 days.
+
+#### Get Model Metrics
+
+```http
+GET /products/{product_id}/forecast/metrics
+```
+
+Returns:
+
+- Selected forecasting method.
+- Evaluation date range.
+- Baseline MAE and WAPE.
+- Linear Regression MAE and WAPE.
+
+Both methods are evaluated on the same chronological holdout period.
+
+The method with the lowest MAE is selected, with the baseline preferred in case of a tie.
+
+Forecasts start on the day following the latest available historical observation, which may differ from the current date.
+
+Interactive documentation is available at:
+
+http://127.0.0.1:8000/docs
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
