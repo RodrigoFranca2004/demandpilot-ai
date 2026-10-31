@@ -317,6 +317,20 @@ Interactive documentation is available at:
 
 http://127.0.0.1:8000/docs
 
+## Inventory Analysis
+
+The inventory module calculates ingredient requirements based on expected product demand and recipe quantities.
+
+It supports:
+
+- Aggregation of ingredients shared across multiple products.
+- Exact decimal calculations for ingredient quantities.
+- Comparison between required and available stock.
+- Identification of estimated ingredient shortages.
+- Validation of missing recipes and inventory records.
+
+Inventory calculations are deterministic and do not rely on Generative AI.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
