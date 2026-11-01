@@ -427,7 +427,48 @@ uv run pytest tests/test_ai_advisor.py -v
 ```
 
 The assistant currently handles independent questions without persistent
-conversation history. A REST chat endpoint will be added next.
+conversation history.
+
+### Chat API
+
+Send a question to the AI advisor:
+
+**POST** `/restaurants/{restaurant_id}/advisor/chat`
+
+Request:
+
+```json
+{
+  "message": "Which ingredients are at risk of shortage?"
+}
+```
+
+Response:
+
+```json
+{
+  "answer": "The inventory analysis indicates..."
+}
+```
+
+The endpoint validates the restaurant and message before calling
+the Gemini-powered advisor.
+
+Responses are based on application tools for demand forecasting
+and inventory analysis. No changes are made to inventory data.
+
+Each request is independent. Conversation history is not persisted.
+
+API documentation is available at:
+
+http://127.0.0.1:8000/docs
+
+### Chat API tests
+
+```powershell
+cd apps/api
+uv run pytest tests/test_advisor_api.py -v
+```
 
 ## Data
 
