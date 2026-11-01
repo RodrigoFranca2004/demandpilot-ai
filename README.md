@@ -387,6 +387,48 @@ An unknown restaurant returns HTTP 404. Invalid planning parameters or insuffici
 
 The analysis is read-only and does not modify inventory quantities.
 
+## AI Advisor
+
+DemandPilot AI integrates Google Gemini to provide natural-language
+recommendations based on demand forecasts and inventory calculations.
+
+The assistant uses function calling to access two application tools:
+
+- `get_product_forecast`: Retrieves product demand forecasts and evaluation metrics.
+- `get_inventory_analysis`: Retrieves ingredient requirements and shortage risks.
+
+Forecasting and inventory calculations remain the responsibility of the
+backend. Gemini interprets their results but does not modify application data.
+
+### Configuration
+
+Generate an API key using Google AI Studio:
+
+https://aistudio.google.com/apikey
+
+Add the following variables to `apps/api/.env`:
+
+```dotenv
+GEMINI_API_KEY=your_api_key_here
+GEMINI_MODEL=gemini-3.5-flash-lite
+```
+
+The Gemini Developer API offers a free tier with usage limits.
+Free-tier data may be used by Google to improve its products.
+Do not submit confidential business information.
+
+### Testing
+
+Advisor tests use mocked Gemini responses and require no API credentials.
+
+```powershell
+cd apps/api
+uv run pytest tests/test_ai_advisor.py -v
+```
+
+The assistant currently handles independent questions without persistent
+conversation history. A REST chat endpoint will be added next.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
