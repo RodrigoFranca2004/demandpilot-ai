@@ -317,6 +317,159 @@ Interactive documentation is available at:
 
 http://127.0.0.1:8000/docs
 
+## Inventory Analysis
+
+The inventory module calculates ingredient requirements based on expected product demand and recipe quantities.
+
+It supports:
+
+- Aggregation of ingredients shared across multiple products.
+- Exact decimal calculations for ingredient quantities.
+- Comparison between required and available stock.
+- Identification of estimated ingredient shortages.
+- Validation of missing recipes and inventory records.
+
+Inventory calculations are deterministic and do not rely on Generative AI.
+
+### Forecast-Based Inventory Analysis
+
+The inventory service combines Machine Learning demand forecasts with restaurant recipes and current inventory records.
+
+It performs the following steps:
+
+1. Retrieve products and their historical sales.
+2. Generate demand forecasts for the requested planning period.
+3. Round daily product forecasts up to whole production units.
+4. Calculate ingredient requirements across all products.
+5. Compare required quantities with available inventory.
+6. Identify ingredient shortages and return structured results.
+
+The service supports planning horizons from 1 to 30 days.
+
+Planning starts on the current date by default and can be configured explicitly. Predictions for dates before the planning period are excluded.
+
+The latest historical sales date is included in the results to provide context about data freshness.
+
+Inventory calculations assume the recorded stock is available for the entire planning period, without additional purchases or stock movements.
+
+The service uses deterministic calculations and does not rely on Generative AI.
+
+### Inventory Analysis API
+
+The application provides a REST endpoint for forecast-based inventory risk analysis.
+
+```http
+GET /restaurants/{restaurant_id}/inventory/analysis
+```
+
+Optional query parameters:
+
+- `start_date`: Planning start date (YYYY-MM-DD). Defaults to the current date.
+- `horizon`: Number of planning days, from 1 to 30. Defaults to 1.
+
+Example:
+
+```http
+GET /restaurants/1/inventory/analysis?start_date=2026-10-31&horizon=1
+```
+
+The response includes:
+
+- Planning start and end dates.
+- Forecasted production quantities for each product.
+- Selected forecasting method and latest historical sales date.
+- Required and available quantities for each ingredient.
+- Estimated shortages and inventory risk indicators.
+
+Ingredient quantities are serialized as decimal strings to preserve precision.
+
+An unknown restaurant returns HTTP 404. Invalid planning parameters or insufficient data return HTTP 422.
+
+The analysis is read-only and does not modify inventory quantities.
+
+## AI Advisor
+
+DemandPilot AI integrates Google Gemini to provide natural-language
+recommendations based on demand forecasts and inventory calculations.
+
+The assistant uses function calling to access two application tools:
+
+- `get_product_forecast`: Retrieves product demand forecasts and evaluation metrics.
+- `get_inventory_analysis`: Retrieves ingredient requirements and shortage risks.
+
+Forecasting and inventory calculations remain the responsibility of the
+backend. Gemini interprets their results but does not modify application data.
+
+### Configuration
+
+Generate an API key using Google AI Studio:
+
+https://aistudio.google.com/apikey
+
+Add the following variables to `apps/api/.env`:
+
+```dotenv
+GEMINI_API_KEY=your_api_key_here
+GEMINI_MODEL=gemini-3.5-flash-lite
+```
+
+The Gemini Developer API offers a free tier with usage limits.
+Free-tier data may be used by Google to improve its products.
+Do not submit confidential business information.
+
+### Testing
+
+Advisor tests use mocked Gemini responses and require no API credentials.
+
+```powershell
+cd apps/api
+uv run pytest tests/test_ai_advisor.py -v
+```
+
+The assistant currently handles independent questions without persistent
+conversation history.
+
+### Chat API
+
+Send a question to the AI advisor:
+
+**POST** `/restaurants/{restaurant_id}/advisor/chat`
+
+Request:
+
+```json
+{
+  "message": "Which ingredients are at risk of shortage?"
+}
+```
+
+Response:
+
+```json
+{
+  "answer": "The inventory analysis indicates..."
+}
+```
+
+The endpoint validates the restaurant and message before calling
+the Gemini-powered advisor.
+
+Responses are based on application tools for demand forecasting
+and inventory analysis. No changes are made to inventory data.
+
+Each request is independent. Conversation history is not persisted.
+
+API documentation is available at:
+
+http://127.0.0.1:8000/docs
+
+### Chat API tests
+
+```powershell
+cd apps/api
+uv run pytest tests/test_advisor_api.py -v
+```
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
