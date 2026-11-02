@@ -470,6 +470,52 @@ cd apps/api
 uv run pytest tests/test_advisor_api.py -v
 ```
 
+## Frontend
+
+The web application uses React, TypeScript, and Vite.
+
+### Requirements
+
+- Node.js 22+
+- npm
+
+### Getting Started
+
+Install frontend dependencies:
+
+```bash
+cd apps/web
+npm install
+```
+
+Start the FastAPI backend separately, then start the frontend:
+
+```bash
+npm run dev
+```
+
+Open http://localhost:5173.
+
+During local development, Vite proxies requests starting with `/api`
+to the FastAPI backend at `http://127.0.0.1:8000`.
+
+The home page displays the backend connection status.
+
+### Validation
+
+```bash
+npm run lint
+npm run build
+```
+
+### Planned Features
+
+- Product demand forecasting dashboard
+- Ingredient inventory risk analysis
+- Gemini-powered AI advisor chat
+
+Gemini credentials remain configured exclusively in the backend.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
