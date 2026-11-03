@@ -516,6 +516,30 @@ npm run build
 
 Gemini credentials remain configured exclusively in the backend.
 
+### Demand Forecasting Dashboard
+
+The frontend provides an interactive demand forecasting dashboard.
+
+Features:
+
+- Select a restaurant product.
+- Choose a forecast horizon of 1, 7, 14, or 30 days.
+- Visualize predicted demand using a responsive line chart.
+- Inspect daily predictions in a table.
+- Compare MAE and WAPE for the baseline and linear regression models.
+- Identify the model selected by the backend.
+- View the last recorded sale date and evaluation period.
+
+The dashboard consumes:
+
+- `GET /products`
+- `GET /products/{product_id}/forecast`
+
+Forecasting calculations and model selection remain in the FastAPI backend.
+
+The application uses Recharts for data visualization and the Vite
+development proxy for backend communication.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.

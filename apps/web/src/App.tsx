@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react'
+
+import { ForecastDashboard } from './components/ForecastDashboard'
 import './App.css'
 
 type ApiStatus = 'checking' | 'online' | 'offline'
 
-const features = [
-  {
-    number: '01',
-    title: 'Demand Forecasting',
-    description:
-      'Explore predicted product demand and compare model performance.',
-  },
+const upcomingFeatures = [
   {
     number: '02',
     title: 'Inventory Planning',
@@ -106,24 +102,32 @@ function App() {
           </div>
         </section>
 
-        <section className="features-section" aria-labelledby="features-title">
+        <ForecastDashboard />
+
+        <section
+          className="features-section"
+          aria-labelledby="features-title"
+        >
           <div className="section-heading">
             <div>
-              <div className="eyebrow">WORKSPACE</div>
-              <h2 id="features-title">Explore the platform</h2>
+              <div className="eyebrow">COMING NEXT</div>
+              <h2 id="features-title">More capabilities</h2>
             </div>
-
-            <span className="section-note">Frontend setup</span>
           </div>
 
           <div className="feature-grid">
-            {features.map((feature) => (
-              <article className="feature-card" key={feature.number}>
+            {upcomingFeatures.map((feature) => (
+              <article
+                className="feature-card"
+                key={feature.number}
+              >
                 <div className="feature-card-top">
                   <span className="feature-number">
                     {feature.number}
                   </span>
-                  <span className="feature-state">Coming next</span>
+                  <span className="feature-state">
+                    Coming next
+                  </span>
                 </div>
 
                 <div>
