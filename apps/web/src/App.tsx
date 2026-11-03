@@ -1,17 +1,12 @@
 import { useEffect, useState } from 'react'
 
 import { ForecastDashboard } from './components/ForecastDashboard'
+import { InventoryDashboard } from './components/InventoryDashboard'
 import './App.css'
 
 type ApiStatus = 'checking' | 'online' | 'offline'
 
 const upcomingFeatures = [
-  {
-    number: '02',
-    title: 'Inventory Planning',
-    description:
-      'Identify ingredient requirements and potential stock shortages.',
-  },
   {
     number: '03',
     title: 'AI Advisor',
@@ -103,6 +98,8 @@ function App() {
         </section>
 
         <ForecastDashboard />
+
+        <InventoryDashboard restaurantId={1} />
 
         <section
           className="features-section"

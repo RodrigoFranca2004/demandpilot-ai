@@ -540,6 +540,33 @@ Forecasting calculations and model selection remain in the FastAPI backend.
 The application uses Recharts for data visualization and the Vite
 development proxy for backend communication.
 
+### Inventory Planning Dashboard
+
+The frontend includes an inventory planning dashboard powered by
+the existing FastAPI inventory analysis service.
+
+Features:
+
+- Select a planning start date.
+- Choose a planning horizon of 1, 7, 14, or 30 days.
+- View the number of products and ingredients analyzed.
+- Identify ingredients at risk of shortage.
+- Compare required, available, and shortage quantities.
+- Visualize inventory coverage for each ingredient.
+- Review predicted production quantities for each product.
+
+The dashboard consumes:
+
+- `GET /restaurants/{restaurant_id}/inventory/analysis`
+
+Inventory calculations, recipe aggregation, and forecasting remain
+in the backend.
+
+The current dashboard uses restaurant ID 1 from the demo dataset.
+
+Quantities and dates are displayed using Brazilian Portuguese
+formatting. The frontend does not update inventory records.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
