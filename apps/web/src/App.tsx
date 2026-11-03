@@ -1,19 +1,12 @@
 import { useEffect, useState } from 'react'
 
+import { AdvisorChat } from './components/AdvisorChat'
 import { ForecastDashboard } from './components/ForecastDashboard'
 import { InventoryDashboard } from './components/InventoryDashboard'
+
 import './App.css'
 
 type ApiStatus = 'checking' | 'online' | 'offline'
-
-const upcomingFeatures = [
-  {
-    number: '03',
-    title: 'AI Advisor',
-    description:
-      'Ask questions about restaurant operations using Gemini.',
-  },
-]
 
 function App() {
   const [apiStatus, setApiStatus] = useState<ApiStatus>('checking')
@@ -47,9 +40,9 @@ function App() {
   }, [])
 
   const statusLabel = {
-    checking: 'Checking API connection',
-    online: 'API connected',
-    offline: 'API unavailable',
+    checking: 'Verificando conexão',
+    online: 'API conectada',
+    offline: 'API indisponível',
   }[apiStatus]
 
   return (
@@ -101,40 +94,7 @@ function App() {
 
         <InventoryDashboard restaurantId={1} />
 
-        <section
-          className="features-section"
-          aria-labelledby="features-title"
-        >
-          <div className="section-heading">
-            <div>
-              <div className="eyebrow">COMING NEXT</div>
-              <h2 id="features-title">More capabilities</h2>
-            </div>
-          </div>
-
-          <div className="feature-grid">
-            {upcomingFeatures.map((feature) => (
-              <article
-                className="feature-card"
-                key={feature.number}
-              >
-                <div className="feature-card-top">
-                  <span className="feature-number">
-                    {feature.number}
-                  </span>
-                  <span className="feature-state">
-                    Coming next
-                  </span>
-                </div>
-
-                <div>
-                  <h3>{feature.title}</h3>
-                  <p>{feature.description}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+        <AdvisorChat restaurantId={1} />
       </main>
 
       <footer className="app-footer">

@@ -567,6 +567,42 @@ The current dashboard uses restaurant ID 1 from the demo dataset.
 Quantities and dates are displayed using Brazilian Portuguese
 formatting. The frontend does not update inventory records.
 
+### Gemini AI Advisor Chat
+
+The frontend includes an AI-powered assistant integrated with the
+FastAPI backend and Google Gemini.
+
+Features:
+
+- Ask questions about demand forecasting and inventory risks.
+- Use suggested questions to explore the demo restaurant data.
+- Display Gemini responses with Markdown formatting.
+- Show loading indicators while the assistant is responding.
+- Handle API errors, unavailable services, and rate limits.
+- Display messages during the current page session.
+
+The chat consumes:
+
+- `POST /restaurants/{restaurant_id}/advisor/chat`
+
+Example request:
+
+```json
+{
+  "message": "Which ingredients are at risk of shortage?"
+}
+```
+
+The backend uses Gemini function calling to retrieve data from
+the existing forecasting and inventory services.
+
+Each request is independent. Previous messages are displayed in
+the frontend but are not sent as conversation history.
+
+Gemini API credentials are configured only in `apps/api/.env`.
+
+The frontend uses `react-markdown` to render assistant responses.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
