@@ -603,6 +603,29 @@ Gemini API credentials are configured only in `apps/api/.env`.
 
 The frontend uses `react-markdown` to render assistant responses.
 
+### Web Dashboard
+
+The React dashboard provides three integrated features:
+
+- **Demand Forecasting:** View product forecasts, compare model
+  evaluation metrics, and explore daily predicted demand.
+- **Inventory Planning:** Analyze ingredient requirements,
+  available quantities, and predicted shortages.
+- **AI Advisor:** Ask Gemini questions about forecasting and
+  inventory data through backend function calling.
+
+The interface uses Brazilian Portuguese and includes responsive
+layouts, keyboard navigation, loading indicators, and error states.
+
+The application communicates with FastAPI through the Vite `/api`
+proxy during local development.
+
+Gemini credentials remain on the backend and are never exposed
+to the browser.
+
+The demo currently uses restaurant ID 1. AI chat messages are
+stored only in React state and are not persisted.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.

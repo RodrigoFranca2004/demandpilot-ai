@@ -8,6 +8,12 @@ import './App.css'
 
 type ApiStatus = 'checking' | 'online' | 'offline'
 
+const NAVIGATION = [
+  { href: '#previsao', label: 'Previsão de demanda' },
+  { href: '#estoque', label: 'Estoque' },
+  { href: '#assistente', label: 'Assistente de IA' },
+]
+
 function App() {
   const [apiStatus, setApiStatus] = useState<ApiStatus>('checking')
 
@@ -47,15 +53,34 @@ function App() {
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#conteudo">
+        Pular para o conteúdo
+      </a>
+
       <header className="app-header">
-        <div className="brand">
+        <a
+          className="brand"
+          href="#inicio"
+          aria-label="DemandPilot AI — início"
+        >
           <span className="brand-mark">D</span>
 
-          <div className="brand-name">
+          <span className="brand-name">
             <strong>DemandPilot</strong>
             <span>AI</span>
-          </div>
-        </div>
+          </span>
+        </a>
+
+        <nav
+          className="app-navigation"
+          aria-label="Navegação principal"
+        >
+          {NAVIGATION.map((item) => (
+            <a key={item.href} href={item.href}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
 
         <div
           className={`api-status api-status--${apiStatus}`}
@@ -66,40 +91,55 @@ function App() {
         </div>
       </header>
 
-      <main className="main-content">
-        <section className="hero">
-          <div className="eyebrow">RESTAURANT INTELLIGENCE</div>
+      <main id="conteudo" className="main-content">
+        <section className="hero" id="inicio">
+          <div className="eyebrow">
+            INTELIGÊNCIA PARA RESTAURANTES
+          </div>
 
           <h1>
-            Better decisions,
+            Decisões melhores,
             <br />
-            powered by data.
+            orientadas por dados.
           </h1>
 
           <p>
-            Forecast product demand, anticipate inventory shortages,
-            and turn operational data into actionable insights.
+            Preveja a demanda dos produtos, antecipe faltas de
+            ingredientes e transforme dados operacionais em
+            informações úteis para seu restaurante.
           </p>
 
           <div className="hero-meta">
             <span>Machine Learning</span>
-            <span className="meta-separator" aria-hidden="true" />
-            <span>Inventory Analytics</span>
-            <span className="meta-separator" aria-hidden="true" />
-            <span>Generative AI</span>
+            <span
+              className="meta-separator"
+              aria-hidden="true"
+            />
+            <span>Planejamento de estoque</span>
+            <span
+              className="meta-separator"
+              aria-hidden="true"
+            />
+            <span>IA Generativa</span>
           </div>
         </section>
 
-        <ForecastDashboard />
+        <div id="previsao" className="dashboard-anchor">
+          <ForecastDashboard />
+        </div>
 
-        <InventoryDashboard restaurantId={1} />
+        <div id="estoque" className="dashboard-anchor">
+          <InventoryDashboard restaurantId={1} />
+        </div>
 
-        <AdvisorChat restaurantId={1} />
+        <div id="assistente" className="dashboard-anchor">
+          <AdvisorChat restaurantId={1} />
+        </div>
       </main>
 
       <footer className="app-footer">
         <span>DemandPilot AI</span>
-        <span>Machine Learning + Generative AI</span>
+        <span>Machine Learning + IA Generativa</span>
       </footer>
     </div>
   )
