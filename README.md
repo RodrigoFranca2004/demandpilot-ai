@@ -470,6 +470,162 @@ cd apps/api
 uv run pytest tests/test_advisor_api.py -v
 ```
 
+## Frontend
+
+The web application uses React, TypeScript, and Vite.
+
+### Requirements
+
+- Node.js 22+
+- npm
+
+### Getting Started
+
+Install frontend dependencies:
+
+```bash
+cd apps/web
+npm install
+```
+
+Start the FastAPI backend separately, then start the frontend:
+
+```bash
+npm run dev
+```
+
+Open http://localhost:5173.
+
+During local development, Vite proxies requests starting with `/api`
+to the FastAPI backend at `http://127.0.0.1:8000`.
+
+The home page displays the backend connection status.
+
+### Validation
+
+```bash
+npm run lint
+npm run build
+```
+
+### Planned Features
+
+- Product demand forecasting dashboard
+- Ingredient inventory risk analysis
+- Gemini-powered AI advisor chat
+
+Gemini credentials remain configured exclusively in the backend.
+
+### Demand Forecasting Dashboard
+
+The frontend provides an interactive demand forecasting dashboard.
+
+Features:
+
+- Select a restaurant product.
+- Choose a forecast horizon of 1, 7, 14, or 30 days.
+- Visualize predicted demand using a responsive line chart.
+- Inspect daily predictions in a table.
+- Compare MAE and WAPE for the baseline and linear regression models.
+- Identify the model selected by the backend.
+- View the last recorded sale date and evaluation period.
+
+The dashboard consumes:
+
+- `GET /products`
+- `GET /products/{product_id}/forecast`
+
+Forecasting calculations and model selection remain in the FastAPI backend.
+
+The application uses Recharts for data visualization and the Vite
+development proxy for backend communication.
+
+### Inventory Planning Dashboard
+
+The frontend includes an inventory planning dashboard powered by
+the existing FastAPI inventory analysis service.
+
+Features:
+
+- Select a planning start date.
+- Choose a planning horizon of 1, 7, 14, or 30 days.
+- View the number of products and ingredients analyzed.
+- Identify ingredients at risk of shortage.
+- Compare required, available, and shortage quantities.
+- Visualize inventory coverage for each ingredient.
+- Review predicted production quantities for each product.
+
+The dashboard consumes:
+
+- `GET /restaurants/{restaurant_id}/inventory/analysis`
+
+Inventory calculations, recipe aggregation, and forecasting remain
+in the backend.
+
+The current dashboard uses restaurant ID 1 from the demo dataset.
+
+Quantities and dates are displayed using Brazilian Portuguese
+formatting. The frontend does not update inventory records.
+
+### Gemini AI Advisor Chat
+
+The frontend includes an AI-powered assistant integrated with the
+FastAPI backend and Google Gemini.
+
+Features:
+
+- Ask questions about demand forecasting and inventory risks.
+- Use suggested questions to explore the demo restaurant data.
+- Display Gemini responses with Markdown formatting.
+- Show loading indicators while the assistant is responding.
+- Handle API errors, unavailable services, and rate limits.
+- Display messages during the current page session.
+
+The chat consumes:
+
+- `POST /restaurants/{restaurant_id}/advisor/chat`
+
+Example request:
+
+```json
+{
+  "message": "Which ingredients are at risk of shortage?"
+}
+```
+
+The backend uses Gemini function calling to retrieve data from
+the existing forecasting and inventory services.
+
+Each request is independent. Previous messages are displayed in
+the frontend but are not sent as conversation history.
+
+Gemini API credentials are configured only in `apps/api/.env`.
+
+The frontend uses `react-markdown` to render assistant responses.
+
+### Web Dashboard
+
+The React dashboard provides three integrated features:
+
+- **Demand Forecasting:** View product forecasts, compare model
+  evaluation metrics, and explore daily predicted demand.
+- **Inventory Planning:** Analyze ingredient requirements,
+  available quantities, and predicted shortages.
+- **AI Advisor:** Ask Gemini questions about forecasting and
+  inventory data through backend function calling.
+
+The interface uses Brazilian Portuguese and includes responsive
+layouts, keyboard navigation, loading indicators, and error states.
+
+The application communicates with FastAPI through the Vite `/api`
+proxy during local development.
+
+Gemini credentials remain on the backend and are never exposed
+to the browser.
+
+The demo currently uses restaurant ID 1. AI chat messages are
+stored only in React state and are not persisted.
+
 ## Data
 
 The project will use synthetic restaurant data generated for demonstration purposes.
