@@ -14,11 +14,14 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 24px max(32px, calc((100vw - 1120px) / 2));
+  padding: 24px max(
+    32px,
+    calc((100vw - var(--layout-content-width)) / 2)
+  );
 }
 
 .app-header {
-  border-bottom: 1px solid #253044;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .brand {
@@ -33,8 +36,8 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: #60e0b0;
-  color: #091710;
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
   font-size: 22px;
   font-weight: 800;
 }
@@ -48,7 +51,7 @@
 }
 
 .brand-name span {
-  color: #60e0b0;
+  color: var(--color-accent);
   font-weight: 700;
 }
 
@@ -56,7 +59,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #aebacd;
+  color: var(--color-text-muted);
   font-size: 13px;
 }
 
@@ -64,20 +67,23 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #f6c56f;
+  background: var(--color-status-warning);
 }
 
 .api-status--online .status-dot {
-  background: #60e0b0;
+  background: var(--color-accent);
 }
 
 .api-status--offline .status-dot {
-  background: #f07878;
+  background: var(--color-status-error);
 }
 
 .main-content {
   flex: 1;
-  width: min(1120px, calc(100% - 64px));
+  width: min(
+    var(--layout-content-width),
+    calc(100% - 64px)
+  );
   margin: 0 auto;
 }
 
@@ -87,7 +93,7 @@
 }
 
 .eyebrow {
-  color: #60e0b0;
+  color: var(--color-accent);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -103,7 +109,7 @@
 
 .hero p {
   max-width: 590px;
-  color: #aebacd;
+  color: var(--color-text-muted);
   font-size: 17px;
   line-height: 1.8;
 }
@@ -114,7 +120,7 @@
   flex-wrap: wrap;
   gap: 14px;
   margin-top: 32px;
-  color: #aebacd;
+  color: var(--color-text-muted);
   font-size: 12px;
 }
 
@@ -122,33 +128,10 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #52617a;
-}
-
-.section-heading {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-
-.section-heading h2 {
-  margin: 12px 0 0;
-  font-size: 27px;
-  letter-spacing: -0.8px;
-}
-
-.section-note {
-  color: #8795ab;
-  font-size: 13px;
+  background: var(--color-divider);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
   .app-navigation a {
     transition: none;
   }

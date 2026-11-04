@@ -1,0 +1,20 @@
+:root {
+  /* Brand */
+  --color-accent: #60e0b0;
+  --color-accent-foreground: #091710;
+
+  /* Text */
+  --color-text-muted: #aebacd;
+  --color-text-secondary: #8795ab;
+
+  /* Borders */
+  --color-border: #253044;
+  --color-divider: #52617a;
+
+  /* Status */
+  --color-status-warning: #f6c56f;
+  --color-status-error: #f07878;
+
+  /* Layout */
+  --layout-content-width: 1120px;
+}
