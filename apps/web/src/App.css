@@ -6,6 +6,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-text-primary);
 }
 
 .app-header,
@@ -14,20 +16,24 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 24px max(
+  padding: 20px max(
     32px,
     calc((100vw - var(--layout-content-width)) / 2)
   );
 }
 
 .app-header {
+  position: relative;
   border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
+  text-decoration: none;
+  color: inherit;
 }
 
 .brand-mark {
@@ -35,7 +41,7 @@
   place-items: center;
   width: 40px;
   height: 40px;
-  border-radius: 12px;
+  border-radius: var(--radius-control);
   background: var(--color-accent);
   color: var(--color-accent-foreground);
   font-size: 22px;
@@ -55,23 +61,54 @@
   font-weight: 700;
 }
 
+.app-navigation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.app-navigation a {
+  padding: 10px 14px;
+  border-radius: var(--radius-control);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.app-navigation a:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.app-navigation a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
 .api-status {
   display: flex;
   align-items: center;
   gap: 8px;
   color: var(--color-text-muted);
-  font-size: 13px;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .status-dot {
   width: 8px;
   height: 8px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: var(--color-status-warning);
 }
 
 .api-status--online .status-dot {
-  background: var(--color-accent);
+  background: var(--color-status-success);
 }
 
 .api-status--offline .status-dot {
@@ -82,45 +119,56 @@
   flex: 1;
   width: min(
     var(--layout-content-width),
-    calc(100% - 64px)
+    calc(100% - 48px)
   );
   margin: 0 auto;
 }
 
 .hero {
-  max-width: 780px;
-  padding: 90px 0 95px;
+  max-width: none;
+  margin: 32px 0 48px;
+  padding: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(
+      ellipse at top right,
+      rgba(45, 212, 191, 0.09),
+      transparent 55%
+    ),
+    var(--color-surface);
 }
 
 .eyebrow {
   color: var(--color-accent);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
 }
 
 .hero h1 {
-  margin: 22px 0;
-  font-size: clamp(42px, 6vw, 72px);
+  max-width: 760px;
+  margin: 16px 0;
+  font-size: clamp(32px, 4vw, 48px);
   font-weight: 750;
-  letter-spacing: -3px;
-  line-height: 1.08;
+  letter-spacing: -1.8px;
+  line-height: 1.15;
 }
 
 .hero p {
-  max-width: 590px;
+  max-width: 650px;
   color: var(--color-text-muted);
-  font-size: 17px;
-  line-height: 1.8;
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .hero-meta {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 32px;
-  color: var(--color-text-muted);
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--color-text-secondary);
   font-size: 12px;
 }
 
@@ -129,6 +177,56 @@
   height: 4px;
   border-radius: 50%;
   background: var(--color-divider);
+}
+
+.app-footer {
+  margin-top: 48px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .app-header {
+    flex-wrap: wrap;
+  }
+
+  .app-navigation {
+    order: 3;
+    width: 100%;
+  }
+
+  .hero {
+    padding: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-header,
+  .app-footer {
+    padding: 20px 24px;
+  }
+
+  .main-content {
+    width: calc(100% - 32px);
+  }
+
+  .hero {
+    margin: 20px 0 32px;
+    padding: 24px;
+  }
+
+  .hero h1 {
+    letter-spacing: -1px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  .app-navigation a {
+    padding: 8px 10px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

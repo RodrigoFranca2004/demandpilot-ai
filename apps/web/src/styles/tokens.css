@@ -1,20 +1,30 @@
 :root {
   /* Brand */
-  --color-accent: #60e0b0;
-  --color-accent-foreground: #091710;
+  --color-accent: #2dd4bf;
+  --color-accent-foreground: #082f2b;
+
+  /* Backgrounds */
+  --color-background: #0d1720;
+  --color-surface: #15232d;
+  --color-surface-muted: #1c2d38;
+  --color-surface-hover: #253945;
 
   /* Text */
+  --color-text-primary: #f1f5f9;
   --color-text-muted: #aebacd;
   --color-text-secondary: #8795ab;
 
   /* Borders */
-  --color-border: #253044;
+  --color-border: #2b3d49;
   --color-divider: #52617a;
 
   /* Status */
+  --color-status-success: #2dd4bf;
   --color-status-warning: #f6c56f;
   --color-status-error: #f07878;
 
   /* Layout */
-  --layout-content-width: 1120px;
+  --layout-content-width: 1200px;
+  --radius-card: 16px;
+  --radius-control: 10px;
 }
