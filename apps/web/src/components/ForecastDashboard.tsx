@@ -15,6 +15,7 @@ import {
   type ForecastReport,
   type Product,
 } from '../api/forecasting'
+import './ForecastDashboard.css'
 
 const HORIZONS = [1, 7, 14, 30]
 

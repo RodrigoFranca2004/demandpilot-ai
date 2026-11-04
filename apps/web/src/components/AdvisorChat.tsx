@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import ReactMarkdown from 'react-markdown'
 
 import { askAdvisor } from '../api/advisor'
+import './AdvisorChat.css'
 
 interface ChatMessage {
   id: number

@@ -6,6 +6,7 @@ import {
   type InventoryAnalysis,
   type Quantity,
 } from '../api/inventory'
+import './InventoryDashboard.css'
 
 const HORIZONS = [1, 7, 14, 30]
 
