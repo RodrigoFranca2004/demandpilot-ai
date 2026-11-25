@@ -6,6 +6,7 @@ from math import ceil, isfinite
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.core.planning import DEFAULT_INVENTORY_HORIZON, planning_today
 from app.forecasting.service import forecast_product_demand
 from app.inventory.calculator import calculate_ingredient_requirements
 from app.models import DailySale, Ingredient, Inventory, Product, RecipeItem
@@ -43,13 +44,13 @@ class InventoryAnalysis:
 def analyze_inventory(
     session: Session,
     restaurant_id: int,
-    horizon: int = 1,
+    horizon: int = DEFAULT_INVENTORY_HORIZON,
     start_date: date | None = None,
 ) -> InventoryAnalysis:
     if not 1 <= horizon <= 30:
         raise ValueError("Planning horizon must be between 1 and 30 days")
 
-    start = start_date if start_date is not None else date.today()
+    start = start_date if start_date is not None else planning_today()
     end = start + timedelta(days=horizon - 1)
 
     products = session.scalars(

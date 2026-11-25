@@ -337,12 +337,20 @@ function ForecastResults({
   )
 }
 
-export function ForecastDashboard() {
+interface ForecastDashboardProps {
+  defaultHorizon: number
+  salesRevision: number
+}
+
+export function ForecastDashboard({
+  defaultHorizon,
+  salesRevision,
+}: ForecastDashboardProps) {
   const [products, setProducts] = useState<Product[]>([])
   const [selectedProductId, setSelectedProductId] = useState<
     number | null
   >(null)
-  const [horizon, setHorizon] = useState(7)
+  const [horizon, setHorizon] = useState(defaultHorizon)
 
   const [productsLoading, setProductsLoading] = useState(true)
   const [productsError, setProductsError] = useState<
@@ -439,7 +447,7 @@ export function ForecastDashboard() {
     void loadForecast()
 
     return () => controller.abort()
-  }, [selectedProductId, horizon])
+  }, [selectedProductId, horizon, salesRevision])
 
   const selectedProduct = products.find(
     (product) => product.id === selectedProductId,

@@ -4,6 +4,7 @@ from datetime import date, timedelta
 import pandas as pd
 from sqlalchemy.orm import Session
 
+from app.core.planning import DEFAULT_FORECAST_HORIZON
 from app.forecasting.baseline import predict_baseline
 from app.forecasting.data import load_sales_history
 from app.forecasting.evaluation import (
@@ -35,7 +36,7 @@ class ForecastReport:
 def forecast_product_demand(
     session: Session,
     product_id: int,
-    horizon: int = 7,
+    horizon: int = DEFAULT_FORECAST_HORIZON,
 ) -> ForecastReport:
     if horizon < 1:
         raise ValueError("Forecast horizon must be positive")

@@ -10,6 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.planning import planning_today
 from app.forecasting.service import forecast_product_demand
 from app.inventory.service import analyze_inventory
 from app.models import Product
@@ -138,7 +139,7 @@ def execute_tool(
         elif name == "get_inventory_analysis":
             params = InventoryArguments.model_validate(arguments)
 
-            if params.start_date is not None and params.start_date < date.today():
+            if params.start_date is not None and params.start_date < planning_today():
                 raise ValueError("Planning start date cannot be in the past")
 
             analysis = analyze_inventory(
@@ -179,7 +180,7 @@ def run_advisor(
 
     instructions = (
         f"{SYSTEM_INSTRUCTIONS}\n"
-        f"Current date: {date.today().isoformat()}\n"
+        f"Current date: {planning_today().isoformat()}\n"
         f"Available products:\n{product_catalog}"
     )
 

@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.database import get_engine
+from app.core.planning import planning_today
 from app.models import (
     DailySale,
     Ingredient,
@@ -170,8 +171,41 @@ def seed_demo_data(session: Session, end_date: date) -> bool:
     return True
 
 
+def refresh_demo_sales(session: Session, restaurant_id: int, end_date: date) -> int:
+    products = dict(
+        session.execute(
+            select(Product.name, Product.id).where(
+                Product.restaurant_id == restaurant_id, Product.name.in_(PRODUCTS)
+            )
+        ).all()
+    )
+    if products.keys() != PRODUCTS.keys():
+        raise ValueError("Demo product catalog is incomplete")
+
+    start_date = end_date - timedelta(days=HISTORY_DAYS - 1)
+    existing = {
+        (product_id, sale_date)
+        for product_id, sale_date in session.execute(
+            select(DailySale.product_id, DailySale.sale_date).where(
+                DailySale.product_id.in_(products.values()),
+                DailySale.sale_date.between(start_date, end_date),
+            )
+        )
+    }
+    rng = Random(SEED)
+    missing_sales = []
+    for name, demand in PRODUCTS.items():
+        sales = generate_daily_sales(products[name], demand, end_date, rng)
+        missing_sales.extend(
+            sale for sale in sales if (sale.product_id, sale.sale_date) not in existing
+        )
+
+    session.add_all(missing_sales)
+    return len(missing_sales)
+
+
 def main() -> None:
-    end_date = date.today() - timedelta(days=1)
+    end_date = planning_today() - timedelta(days=1)
 
     with Session(get_engine()) as session:
         if seed_demo_data(session, end_date):
