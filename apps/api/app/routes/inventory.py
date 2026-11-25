@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.planning import DEFAULT_INVENTORY_HORIZON
 from app.inventory.service import analyze_inventory
 from app.models import Restaurant
 from app.schemas.inventory import InventoryAnalysisResponse
@@ -22,7 +23,7 @@ router = APIRouter(
 def get_inventory_analysis(
     restaurant_id: int,
     db: Annotated[Session, Depends(get_db)],
-    horizon: Annotated[int, Query(ge=1, le=30)] = 1,
+    horizon: Annotated[int, Query(ge=1, le=30)] = DEFAULT_INVENTORY_HORIZON,
     start_date: date | None = None,
 ) -> InventoryAnalysisResponse:
     restaurant = db.get(Restaurant, restaurant_id)

@@ -20,16 +20,6 @@ const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
   timeZone: 'UTC',
 })
 
-function getLocalToday(): string {
-  const today = new Date()
-
-  const year = today.getFullYear()
-  const month = String(today.getMonth() + 1).padStart(2, '0')
-  const day = String(today.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
-}
-
 function formatDate(value: string): string {
   return dateFormatter.format(new Date(`${value}T00:00:00Z`))
 }
@@ -298,13 +288,20 @@ function InventoryResults({
 
 interface InventoryDashboardProps {
   restaurantId: number
+  defaultStartDate: string
+  defaultHorizon: number
+  salesRevision: number
 }
 
 export function InventoryDashboard({
   restaurantId,
+  defaultStartDate,
+  defaultHorizon,
+  salesRevision,
 }: InventoryDashboardProps) {
-  const [startDate, setStartDate] = useState(getLocalToday)
-  const [horizon, setHorizon] = useState(1)
+  const [selectedDate, setSelectedDate] = useState('')
+  const startDate = selectedDate >= defaultStartDate ? selectedDate : defaultStartDate
+  const [horizon, setHorizon] = useState(defaultHorizon)
 
   const [analysis, setAnalysis] = useState<
     InventoryAnalysis | null
@@ -350,7 +347,7 @@ export function InventoryDashboard({
     void loadInventory()
 
     return () => controller.abort()
-  }, [restaurantId, startDate, horizon])
+  }, [restaurantId, startDate, horizon, salesRevision])
 
   return (
     <section
@@ -376,10 +373,10 @@ export function InventoryDashboard({
             <input
               id="inventory-start-date"
               type="date"
-              min={getLocalToday()}
+              min={defaultStartDate}
               value={startDate}
               onChange={(event) =>
-                setStartDate(event.target.value)
+                setSelectedDate(event.target.value)
               }
             />
           </div>

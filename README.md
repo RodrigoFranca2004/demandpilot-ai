@@ -1,633 +1,145 @@
 # DemandPilot AI
 
-AI-powered demand forecasting and inventory optimization platform for restaurants, combining machine learning, intelligent agents, and actionable operational insights.
+DemandPilot AI is a restaurant demand forecasting and inventory planning demo. Its Portuguese-language dashboard shows product forecasts, estimates ingredient shortages, and includes a Gemini assistant that answers questions using the application's forecasting and inventory tools.
 
-## Overview
+## Demand forecasting and inventory
 
-DemandPilot AI is a portfolio project that demonstrates how traditional Machine Learning and Generative AI can work together to support restaurant operations.
+The API trains a scikit-learn linear regression model for each product. It uses the day index to capture trends and day-of-week indicators to capture weekly seasonality. The baseline repeats the average of the last seven available observations across the forecast horizon.
 
-The application will use reproducible synthetic sales data to forecast product demand, estimate ingredient requirements, identify inventory shortages, and provide actionable recommendations through an AI assistant.
+The first 80% of each product's sales history is used for training and the last 20% for evaluation. Both methods are scored on the same holdout period using mean absolute error (MAE) and weighted absolute percentage error (WAPE). The API selects the method with the lower MAE and uses the baseline in a tie. WAPE is undefined when total demand in the holdout period is zero.
 
-## Planned Features
+The selected method uses the full history to forecast from the day after the last recorded sale. Predictions are clamped to zero or above. Inventory planning rounds each daily product forecast up to whole units, aggregates ingredient needs across recipes, and compares them with the available stock.
 
-- Historical sales analysis and visualization.
-- Product demand forecasting using Machine Learning.
-- Model evaluation against a simple baseline.
-- Ingredient requirements and inventory risk analysis.
-- AI assistant with tool calling for data-grounded recommendations.
-- Interactive dashboard with Portuguese and English support.
+## Gemini assistant
 
-## Tech Stack
+The backend uses the Google Gen AI SDK with the model configured in `GEMINI_MODEL`, which defaults to `gemini-3.5-flash-lite`. The assistant calls an application tool before answering.
 
-| Area | Technologies |
-|------|-------------|
-| Backend | Python, FastAPI, Pydantic, SQLAlchemy |
-| Database | PostgreSQL, Alembic |
-| Machine Learning | Pandas, NumPy, scikit-learn |
-| Generative AI | OpenAI API, tool calling |
-| Frontend | React, TypeScript, Vite |
-| Infrastructure | Docker, Docker Compose, GitHub Actions |
-| Testing and Quality | Pytest, Ruff |
+- `get_product_forecast` retrieves demand forecasts and evaluation metrics for a product in the demo restaurant.
+- `get_inventory_analysis` retrieves projected production, ingredient requirements, and shortage risks.
 
-## Project Status
+The backend validates tool arguments and runs the same services that power the dashboard. Gemini explains the results in the language of the question. The dashboard displays the chat history for the current page session. Each API request handles one question independently.
 
-**Status:** Initial development.
+Both assistant tools support horizons of 1–7 days. The dashboard endpoints support 1–30 days, with defaults of 7 days for forecasting and 1 day for inventory. Set `GEMINI_API_KEY` in `apps/api/.env` to enable live chat. Tests use mocked Gemini responses and require no API key.
 
-The application is being developed incrementally. Setup instructions, architecture details, and demonstration examples will be added as features are implemented.
+## Synthetic dataset
 
-## Running the API
+The initial seed creates a fictional restaurant and 180 days of sales ending yesterday in the `America/Sao_Paulo` time zone.
 
-### Requirements
+| Data | Initial records | Details |
+| --- | ---: | --- |
+| Restaurant | 1 | DemandPilot Demo |
+| Products | 5 | Classic Burger (32), Chicken Sandwich (22), Veggie Burger (14), French Fries (40), and Lemonade (28). The numbers are base units per day before adjustments. |
+| Ingredients | 10 | Measured in units or grams. Examples include buns, beef patties, potatoes, and sugar. |
+| Recipe entries | 16 | Each entry links a product to one ingredient and specifies the amount per serving. French Fries use 180 g of potatoes per serving. |
+| Inventory balances | 10 | One per ingredient, such as 75 buns or 9,000 g of potatoes. |
+| Daily sales | 900 | One quantity per product per day for 180 days. |
 
-- Python 3.13
-- uv
+The generator multiplies each product's base demand by the following factors, rounds the result to a whole number, and clamps it to zero or above.
 
-### Setup
+| Factor | How it works |
+| --- | --- |
+| Growth trend | The multiplier starts at `1.000` and increases by `0.001` per day. It reaches `1.179` on day 180. |
+| Weekly seasonality | Monday `0.85`, Tuesday `0.95`, Wednesday `1.00`, Thursday `1.05`, Friday `1.20`, Saturday `1.50`, and Sunday `1.30`. |
+| Random variation | A uniformly sampled multiplier between `0.90` and `1.10` adds day-to-day variability. The fixed random seed `42` makes the same date window reproducible. |
 
-From the repository root:
+After the initial CLI seed, click **Atualizar dados da demo** in the dashboard to fill missing sales in the latest 180-day window through yesterday. The refresh preserves existing sales, recipes, and stock balances. Once the window is complete, repeating the refresh adds zero records. The button requires `DEMO_REFRESH_ENABLED=true` in `apps/api/.env`. The example file already sets it. If you already have an `.env` file, add the variable and restart the API.
 
-```powershell
-cd apps/api
-uv sync
+## Project structure
+
+```text
+demandpilot-ai/
+├── .github/
+│   └── workflows/            # API and web checks in GitHub Actions
+├── apps/
+│   ├── api/
+│   │   ├── alembic/          # PostgreSQL schema migrations
+│   │   ├── app/
+│   │   │   ├── agents/       # Gemini advisor and tool calls
+│   │   │   ├── core/         # Settings, database sessions, planning defaults
+│   │   │   ├── forecasting/  # Baseline, regression, and evaluation
+│   │   │   ├── inventory/    # Ingredient requirements and shortage risk
+│   │   │   ├── routes/       # FastAPI endpoints
+│   │   │   ├── schemas/      # Pydantic request and response models
+│   │   │   ├── demo_data.py  # Synthetic dataset seed and sales refresh
+│   │   │   ├── main.py       # FastAPI entry point
+│   │   │   └── models.py     # SQLAlchemy models
+│   │   ├── tests/            # Pytest unit and API tests
+│   │   ├── .env.example      # Local database and Gemini settings
+│   │   ├── pyproject.toml
+│   │   └── uv.lock
+│   └── web/
+│       ├── src/
+│       │   ├── api/           # HTTP clients
+│       │   ├── components/    # Forecast, inventory, and chat panels
+│       │   └── App.tsx        # Dashboard and demo refresh button
+│       ├── package.json
+│       ├── package-lock.json
+│       └── vite.config.ts    # Development proxy and build settings
+├── AGENTS.md                 # Vercel deployment plan
+├── compose.yaml              # Local PostgreSQL service
+└── README.md
 ```
 
-### Start the development server
+## Dependencies
 
-```powershell
-uv run uvicorn app.main:app --reload
-```
+| Area | Dependencies |
+| --- | --- |
+| API | Python 3.13, FastAPI, Pydantic, pydantic-settings, and Uvicorn |
+| Database | PostgreSQL 17, SQLAlchemy, psycopg 3, Alembic, and Docker Compose for local development |
+| Forecasting and AI | NumPy, pandas, scikit-learn, and Google Gen AI SDK (`google-genai`) |
+| Web | Node.js 22, npm, React 19, TypeScript, Vite 8, Recharts, and react-markdown |
+| Quality | Pytest, HTTPX2 for API tests, Ruff, ESLint, and GitHub Actions |
 
-The API will be available at:
+The dependency manifests and lockfiles are in `apps/api` and `apps/web`.
 
-- API: http://127.0.0.1:8000
-- Health check: http://127.0.0.1:8000/health
-- Interactive API documentation: http://127.0.0.1:8000/docs
+## Run locally
 
-## Running PostgreSQL
+Install Python 3.13, uv, an up-to-date Node.js 22 with npm, and Docker with Compose.
 
-### Requirements
-
-- Docker Engine with Docker Compose
-
-### Setup
-
-From the repository root, create a local environment file:
+From the repository root, copy the environment example on first setup and start PostgreSQL.
 
 ```powershell
 Copy-Item apps/api/.env.example apps/api/.env
+docker compose --env-file apps/api/.env up -d --wait db
 ```
 
-The example credentials are intended for local development only.
-
-### Start PostgreSQL
-
-```powershell
-docker compose --env-file apps/api/.env up -d db
-```
-
-### Apply database migrations
-
-From the repository root, start PostgreSQL:
-
-```powershell
-docker compose --env-file apps/api/.env up -d db
-```
-
-Then, from the API directory:
+In one terminal, go to `apps/api`, install dependencies, migrate and seed the database, then start the API.
 
 ```powershell
 cd apps/api
-uv run alembic upgrade head
+uv sync --locked
+uv run --locked alembic upgrade head
+uv run --locked python -m app.demo_data
+uv run --locked uvicorn app.main:app --reload
 ```
 
-To check the current migration revision:
+In a second terminal, go to `apps/web` and start the dashboard.
 
 ```powershell
-uv run alembic current
-```
-
-Database schema changes are managed through Alembic migrations.
-
-### Check database status
-
-```powershell
-docker compose --env-file apps/api/.env ps
-```
-
-### Stop PostgreSQL
-
-```powershell
-docker compose --env-file apps/api/.env down
-```
-
-The database uses a persistent Docker volume. Stopping the service does not delete its data.
-
-## Demo Data
-
-The application uses reproducible synthetic restaurant data for development and demonstration.
-
-The dataset includes:
-
-- One fictional restaurant.
-- Five products and ten ingredients.
-- Product recipes and initial inventory quantities.
-- 180 days of historical sales per product.
-- Weekly demand patterns, gradual growth, and controlled random variation.
-
-### Generate Demo Data
-
-Ensure PostgreSQL is running and migrations have been applied.
-
-From the API directory:
-
-```powershell
-uv run python -m app.demo_data
-```
-
-The generator uses a fixed random seed and creates historical sales ending on the day before its first execution.
-
-Running the command again does not duplicate existing demo data.
-
-### Run Tests
-
-```powershell
-uv run pytest -q
-```
-
-All demo data is synthetic and does not represent real restaurant transactions.
-
-## API Endpoints
-
-The backend provides REST endpoints for accessing restaurant products and historical sales.
-
-### List Products
-
-```http
-GET /products
-```
-
-Returns the available products.
-
-Example response:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Classic Burger"
-  }
-]
-```
-
-### Get Product Sales
-
-```http
-GET /products/{product_id}/sales
-```
-
-Returns historical daily sales for a specific product, ordered by date.
-
-Optional query parameters:
-
-- `start_date`: Start of the date range (YYYY-MM-DD).
-- `end_date`: End of the date range (YYYY-MM-DD).
-
-Example:
-
-```http
-GET /products/1/sales?start_date=2026-01-01&end_date=2026-01-31
-```
-
-Example response:
-
-```json
-[
-  {
-    "sale_date": "2026-01-01",
-    "quantity": 20
-  },
-  {
-    "sale_date": "2026-01-02",
-    "quantity": 25
-  }
-]
-```
-
-An unknown product returns HTTP 404. Invalid date parameters or reversed date ranges return HTTP 422.
-
-Interactive API documentation is available at:
-
-http://127.0.0.1:8000/docs
-
-## Demand Forecasting
-
-The forecasting module uses historical daily sales to estimate future product demand.
-
-### Baseline
-
-The initial baseline predicts demand using the average of the last seven available sales observations.
-
-It supports configurable forecast horizons and lookback windows.
-
-The baseline serves as a reference for evaluating future Machine Learning models.
-
-Model training, temporal validation, and evaluation metrics will be introduced in subsequent development steps.
-
-### Machine Learning Model
-
-The initial Machine Learning model uses scikit-learn's Linear Regression to predict daily product demand.
-
-Features include:
-
-- Day index to represent historical trends.
-- Day-of-week indicators to capture weekly demand patterns.
-
-### Evaluation
-
-Model evaluation uses a chronological 80/20 train-test split.
-
-The model is trained only on historical observations preceding the test period.
-
-Evaluation metrics:
-
-- MAE (Mean Absolute Error).
-- WAPE (Weighted Absolute Percentage Error).
-
-Predictions are constrained to non-negative values.
-
-The evaluation uses a fixed forecast origin without updating the model with test-period sales.
-
-### Forecast Service
-
-The forecasting service compares two prediction methods:
-
-- Seven-day moving average baseline.
-- Linear Regression with calendar-based features.
-
-Both methods are evaluated on the same chronological holdout period using MAE and WAPE.
-
-The method with the lowest MAE is selected. The baseline is preferred when both methods achieve the same MAE.
-
-Future forecasts use all available historical observations after evaluation.
-
-The service provides:
-
-- Selected forecasting method.
-- Baseline and regression evaluation metrics.
-- Evaluation date range.
-- Historical data cutoff date.
-- Daily demand forecasts for a configurable horizon.
-
-Forecasts start on the day following the latest available sales observation.
-
-### Forecasting API
-
-Demand forecasts and model evaluation metrics are available through REST endpoints.
-
-#### Get Product Forecast
-
-```http
-GET /products/{product_id}/forecast?horizon=7
-```
-
-Returns the selected forecasting method and daily demand predictions.
-
-The `horizon` parameter is optional and accepts values from 1 to 30 days.
-
-#### Get Model Metrics
-
-```http
-GET /products/{product_id}/forecast/metrics
-```
-
-Returns:
-
-- Selected forecasting method.
-- Evaluation date range.
-- Baseline MAE and WAPE.
-- Linear Regression MAE and WAPE.
-
-Both methods are evaluated on the same chronological holdout period.
-
-The method with the lowest MAE is selected, with the baseline preferred in case of a tie.
-
-Forecasts start on the day following the latest available historical observation, which may differ from the current date.
-
-Interactive documentation is available at:
-
-http://127.0.0.1:8000/docs
-
-## Inventory Analysis
-
-The inventory module calculates ingredient requirements based on expected product demand and recipe quantities.
-
-It supports:
-
-- Aggregation of ingredients shared across multiple products.
-- Exact decimal calculations for ingredient quantities.
-- Comparison between required and available stock.
-- Identification of estimated ingredient shortages.
-- Validation of missing recipes and inventory records.
-
-Inventory calculations are deterministic and do not rely on Generative AI.
-
-### Forecast-Based Inventory Analysis
-
-The inventory service combines Machine Learning demand forecasts with restaurant recipes and current inventory records.
-
-It performs the following steps:
-
-1. Retrieve products and their historical sales.
-2. Generate demand forecasts for the requested planning period.
-3. Round daily product forecasts up to whole production units.
-4. Calculate ingredient requirements across all products.
-5. Compare required quantities with available inventory.
-6. Identify ingredient shortages and return structured results.
-
-The service supports planning horizons from 1 to 30 days.
-
-Planning starts on the current date by default and can be configured explicitly. Predictions for dates before the planning period are excluded.
-
-The latest historical sales date is included in the results to provide context about data freshness.
-
-Inventory calculations assume the recorded stock is available for the entire planning period, without additional purchases or stock movements.
-
-The service uses deterministic calculations and does not rely on Generative AI.
-
-### Inventory Analysis API
-
-The application provides a REST endpoint for forecast-based inventory risk analysis.
-
-```http
-GET /restaurants/{restaurant_id}/inventory/analysis
-```
-
-Optional query parameters:
-
-- `start_date`: Planning start date (YYYY-MM-DD). Defaults to the current date.
-- `horizon`: Number of planning days, from 1 to 30. Defaults to 1.
-
-Example:
-
-```http
-GET /restaurants/1/inventory/analysis?start_date=2026-10-31&horizon=1
-```
-
-The response includes:
-
-- Planning start and end dates.
-- Forecasted production quantities for each product.
-- Selected forecasting method and latest historical sales date.
-- Required and available quantities for each ingredient.
-- Estimated shortages and inventory risk indicators.
-
-Ingredient quantities are serialized as decimal strings to preserve precision.
-
-An unknown restaurant returns HTTP 404. Invalid planning parameters or insufficient data return HTTP 422.
-
-The analysis is read-only and does not modify inventory quantities.
-
-## AI Advisor
-
-DemandPilot AI integrates Google Gemini to provide natural-language
-recommendations based on demand forecasts and inventory calculations.
-
-The assistant uses function calling to access two application tools:
-
-- `get_product_forecast`: Retrieves product demand forecasts and evaluation metrics.
-- `get_inventory_analysis`: Retrieves ingredient requirements and shortage risks.
-
-Forecasting and inventory calculations remain the responsibility of the
-backend. Gemini interprets their results but does not modify application data.
-
-### Configuration
-
-Generate an API key using Google AI Studio:
-
-https://aistudio.google.com/apikey
-
-Add the following variables to `apps/api/.env`:
-
-```dotenv
-GEMINI_API_KEY=your_api_key_here
-GEMINI_MODEL=gemini-3.5-flash-lite
-```
-
-The Gemini Developer API offers a free tier with usage limits.
-Free-tier data may be used by Google to improve its products.
-Do not submit confidential business information.
-
-### Testing
-
-Advisor tests use mocked Gemini responses and require no API credentials.
-
-```powershell
-cd apps/api
-uv run pytest tests/test_ai_advisor.py -v
-```
-
-The assistant currently handles independent questions without persistent
-conversation history.
-
-### Chat API
-
-Send a question to the AI advisor:
-
-**POST** `/restaurants/{restaurant_id}/advisor/chat`
-
-Request:
-
-```json
-{
-  "message": "Which ingredients are at risk of shortage?"
-}
-```
-
-Response:
-
-```json
-{
-  "answer": "The inventory analysis indicates..."
-}
-```
-
-The endpoint validates the restaurant and message before calling
-the Gemini-powered advisor.
-
-Responses are based on application tools for demand forecasting
-and inventory analysis. No changes are made to inventory data.
-
-Each request is independent. Conversation history is not persisted.
-
-API documentation is available at:
-
-http://127.0.0.1:8000/docs
-
-### Chat API tests
-
-```powershell
-cd apps/api
-uv run pytest tests/test_advisor_api.py -v
-```
-
-## Frontend
-
-The web application uses React, TypeScript, and Vite.
-
-### Requirements
-
-- Node.js 22+
-- npm
-
-### Getting Started
-
-Install frontend dependencies:
-
-```bash
 cd apps/web
-npm install
-```
-
-Start the FastAPI backend separately, then start the frontend:
-
-```bash
+npm ci
 npm run dev
 ```
 
-Open http://localhost:5173.
+Open <http://localhost:5173>. Vite forwards `/api/*` to the FastAPI server on port 8000. The endpoint reference is available in [local Swagger UI](http://127.0.0.1:8000/docs).
 
-During local development, Vite proxies requests starting with `/api`
-to the FastAPI backend at `http://127.0.0.1:8000`.
+## Tests and quality checks
 
-The home page displays the backend connection status.
+Run these checks from `apps/api`.
 
-### Validation
+```powershell
+uv run --locked ruff check .
+uv run --locked ruff format --check .
+uv run --locked pytest -q
+```
 
-```bash
+The API suite covers reproducible demo data, refresh idempotency, chronological evaluation, model selection, MAE and WAPE, recipe aggregation, inventory calculations, and HTTP contracts. Database-backed API tests use in-memory SQLite. Advisor tests cover tool calls, validation, missing credentials, and rate limits using mocks.
+
+Run these checks from `apps/web`.
+
+```powershell
 npm run lint
 npm run build
 ```
 
-### Planned Features
-
-- Product demand forecasting dashboard
-- Ingredient inventory risk analysis
-- Gemini-powered AI advisor chat
-
-Gemini credentials remain configured exclusively in the backend.
-
-### Demand Forecasting Dashboard
-
-The frontend provides an interactive demand forecasting dashboard.
-
-Features:
-
-- Select a restaurant product.
-- Choose a forecast horizon of 1, 7, 14, or 30 days.
-- Visualize predicted demand using a responsive line chart.
-- Inspect daily predictions in a table.
-- Compare MAE and WAPE for the baseline and linear regression models.
-- Identify the model selected by the backend.
-- View the last recorded sale date and evaluation period.
-
-The dashboard consumes:
-
-- `GET /products`
-- `GET /products/{product_id}/forecast`
-
-Forecasting calculations and model selection remain in the FastAPI backend.
-
-The application uses Recharts for data visualization and the Vite
-development proxy for backend communication.
-
-### Inventory Planning Dashboard
-
-The frontend includes an inventory planning dashboard powered by
-the existing FastAPI inventory analysis service.
-
-Features:
-
-- Select a planning start date.
-- Choose a planning horizon of 1, 7, 14, or 30 days.
-- View the number of products and ingredients analyzed.
-- Identify ingredients at risk of shortage.
-- Compare required, available, and shortage quantities.
-- Visualize inventory coverage for each ingredient.
-- Review predicted production quantities for each product.
-
-The dashboard consumes:
-
-- `GET /restaurants/{restaurant_id}/inventory/analysis`
-
-Inventory calculations, recipe aggregation, and forecasting remain
-in the backend.
-
-The current dashboard uses restaurant ID 1 from the demo dataset.
-
-Quantities and dates are displayed using Brazilian Portuguese
-formatting. The frontend does not update inventory records.
-
-### Gemini AI Advisor Chat
-
-The frontend includes an AI-powered assistant integrated with the
-FastAPI backend and Google Gemini.
-
-Features:
-
-- Ask questions about demand forecasting and inventory risks.
-- Use suggested questions to explore the demo restaurant data.
-- Display Gemini responses with Markdown formatting.
-- Show loading indicators while the assistant is responding.
-- Handle API errors, unavailable services, and rate limits.
-- Display messages during the current page session.
-
-The chat consumes:
-
-- `POST /restaurants/{restaurant_id}/advisor/chat`
-
-Example request:
-
-```json
-{
-  "message": "Which ingredients are at risk of shortage?"
-}
-```
-
-The backend uses Gemini function calling to retrieve data from
-the existing forecasting and inventory services.
-
-Each request is independent. Previous messages are displayed in
-the frontend but are not sent as conversation history.
-
-Gemini API credentials are configured only in `apps/api/.env`.
-
-The frontend uses `react-markdown` to render assistant responses.
-
-### Web Dashboard
-
-The React dashboard provides three integrated features:
-
-- **Demand Forecasting:** View product forecasts, compare model
-  evaluation metrics, and explore daily predicted demand.
-- **Inventory Planning:** Analyze ingredient requirements,
-  available quantities, and predicted shortages.
-- **AI Advisor:** Ask Gemini questions about forecasting and
-  inventory data through backend function calling.
-
-The interface uses Brazilian Portuguese and includes responsive
-layouts, keyboard navigation, loading indicators, and error states.
-
-The application communicates with FastAPI through the Vite `/api`
-proxy during local development.
-
-Gemini credentials remain on the backend and are never exposed
-to the browser.
-
-The demo currently uses restaurant ID 1. AI chat messages are
-stored only in React state and are not persisted.
-
-## Data
-
-The project will use synthetic restaurant data generated for demonstration purposes.
-
-No real customer data or commercial restaurant integrations are required.
+The web build also checks TypeScript types.

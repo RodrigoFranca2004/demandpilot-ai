@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.planning import DEFAULT_FORECAST_HORIZON
 from app.forecasting.service import (
     ForecastReport,
     forecast_product_demand,
@@ -23,7 +24,7 @@ router = APIRouter(
 def get_forecast_report(
     db: Session,
     product_id: int,
-    horizon: int = 7,
+    horizon: int = DEFAULT_FORECAST_HORIZON,
 ) -> ForecastReport:
     product = db.get(Product, product_id)
 
@@ -53,7 +54,7 @@ def get_forecast_report(
 def get_product_forecast(
     product_id: int,
     db: Annotated[Session, Depends(get_db)],
-    horizon: Annotated[int, Query(ge=1, le=30)] = 7,
+    horizon: Annotated[int, Query(ge=1, le=30)] = DEFAULT_FORECAST_HORIZON,
 ) -> ForecastResponse:
     report = get_forecast_report(
         db=db,
