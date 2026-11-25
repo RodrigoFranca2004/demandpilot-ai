@@ -3,48 +3,59 @@
 }
 
 .app-shell {
+  --page-gutter: clamp(0.75rem, 2.2vw, 2.75rem);
+  --workspace-padding: clamp(0.75rem, 1.75vw, 2rem);
+  --panel-gap: clamp(0.75rem, 1.5vw, 1.5rem);
+  --section-gap: clamp(2.75rem, 5vw, 5rem);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-.app-header,
 .app-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 24px max(32px, calc((100vw - 1120px) / 2));
+  padding: 1.25rem var(--page-gutter);
 }
 
 .app-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem var(--page-gutter);
   border-bottom: 1px solid #253044;
 }
 
 .brand {
   display: flex;
+  justify-self: start;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
+  text-decoration: none;
 }
 
 .brand-mark {
   display: grid;
+  flex: none;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.875rem;
   background: #60e0b0;
   color: #091710;
-  font-size: 22px;
+  font-size: 1.75rem;
   font-weight: 800;
 }
 
 .brand-name {
   display: flex;
   align-items: baseline;
-  gap: 4px;
-  font-size: 18px;
-  letter-spacing: -0.5px;
+  gap: 0.25rem;
+  font-size: 1.375rem;
+  letter-spacing: -0.025em;
 }
 
 .brand-name span {
@@ -55,14 +66,15 @@
 .api-status {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-self: end;
+  gap: 0.625rem;
   color: #aebacd;
-  font-size: 13px;
+  font-size: 1rem;
 }
 
 .status-dot {
-  width: 8px;
-  height: 8px;
+  flex: 0 0 0.625rem;
+  height: 0.625rem;
   border-radius: 50%;
   background: #f6c56f;
 }
@@ -77,45 +89,49 @@
 
 .main-content {
   flex: 1;
-  width: min(1120px, calc(100% - 64px));
-  margin: 0 auto;
+  min-width: 0;
+  padding-inline: var(--page-gutter);
 }
 
 .hero {
-  max-width: 780px;
-  padding: 90px 0 95px;
+  padding-block: clamp(2rem, 4vw, 4.5rem) var(--section-gap);
+  text-align: center;
 }
 
 .eyebrow {
   color: #60e0b0;
-  font-size: 11px;
+  font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 2px;
 }
 
 .hero h1 {
-  margin: 22px 0;
-  font-size: clamp(42px, 6vw, 72px);
+  max-width: 26ch;
+  margin: 1rem auto;
+  font-size: clamp(1.875rem, 4.15vw, 4.5rem);
   font-weight: 750;
-  letter-spacing: -3px;
-  line-height: 1.08;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+  text-wrap: balance;
 }
 
 .hero p {
-  max-width: 590px;
+  max-width: 64ch;
+  margin-inline: auto;
   color: #aebacd;
-  font-size: 17px;
-  line-height: 1.8;
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  line-height: 1.6;
 }
 
 .hero-meta {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 14px;
-  margin-top: 32px;
+  margin-top: 1.25rem;
   color: #aebacd;
-  font-size: 12px;
+  font-size: 0.9375rem;
 }
 
 .meta-separator {
@@ -128,11 +144,16 @@
 .demo-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 24px;
   color: #aebacd;
-  font-size: 14px;
+  font-size: 0.9375rem;
+}
+
+.demo-actions span:empty {
+  position: absolute;
 }
 
 .demo-actions button {
@@ -157,27 +178,28 @@
 
 .section-heading {
   display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 24px;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: var(--panel-gap);
+  text-align: center;
 }
 
 .section-heading h2 {
-  margin: 12px 0 0;
-  font-size: 27px;
+  margin: 0.5rem 0 0;
+  font-size: clamp(1.375rem, 2.4vw, 2.25rem);
   letter-spacing: -0.8px;
 }
 
 .section-note {
   color: #8795ab;
-  font-size: 13px;
+  font-size: 0.875rem;
 }
 
 /* Demand forecasting */
 
 .forecast-section {
-  margin-bottom: 100px;
+  margin-bottom: var(--section-gap);
 }
 
 .forecast-workspace {
@@ -481,23 +503,6 @@
 }
 
 @media (max-width: 768px) {
-  .app-header,
-  .app-footer {
-    padding: 20px 24px;
-  }
-
-  .main-content {
-    width: calc(100% - 48px);
-  }
-
-  .hero {
-    padding: 76px 0;
-  }
-
-  .hero h1 {
-    letter-spacing: -2px;
-  }
-
   .forecast-controls,
   .forecast-summary,
   .forecast-metrics-grid,
@@ -520,11 +525,6 @@
 }
 
 @media (max-width: 480px) {
-  .app-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
   .forecast-chart {
     height: 260px;
   }
@@ -543,11 +543,11 @@
 /* Inventory planning */
 
 .inventory-section {
-  margin-bottom: 100px;
+  margin-bottom: var(--section-gap);
 }
 
 .inventory-workspace {
-  padding: 28px;
+  padding: var(--workspace-padding);
   border: 1px solid #263247;
   border-radius: 18px;
   background: #111a29;
@@ -556,8 +556,8 @@
 .inventory-controls {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  margin-bottom: 28px;
+  gap: var(--panel-gap);
+  margin-bottom: var(--panel-gap);
 }
 
 .inventory-control {
@@ -568,8 +568,9 @@
 
 .inventory-control label {
   color: #aebacd;
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .inventory-control input,
@@ -583,7 +584,7 @@
   color: #e8edf5;
   color-scheme: dark;
   font: inherit;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .inventory-control input:focus-visible,
@@ -595,39 +596,40 @@
 .inventory-results {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: var(--panel-gap);
 }
 
 .inventory-summary-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--panel-gap);
 }
 
 .inventory-summary-card {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 22px;
+  padding: var(--workspace-padding);
   border: 1px solid #263247;
   border-radius: 12px;
   background: #182336;
+  text-align: center;
 }
 
 .inventory-summary-card > span {
   color: #aebacd;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 
 .inventory-summary-card strong {
-  font-size: 34px;
+  font-size: 2.125rem;
   font-weight: 750;
   line-height: 1;
 }
 
 .inventory-summary-card small {
   color: #8795ab;
-  font-size: 11px;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 
@@ -642,11 +644,13 @@
 .inventory-period {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 32px;
   padding: 18px;
   border: 1px solid #263247;
   border-radius: 12px;
   background: #182336;
+  text-align: center;
 }
 
 .inventory-period > div {
@@ -657,37 +661,35 @@
 
 .inventory-detail-label {
   color: #8795ab;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 
 .inventory-period strong {
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .inventory-panel {
-  padding: 24px;
+  min-width: 0;
+  padding: var(--workspace-padding);
   border: 1px solid #263247;
   border-radius: 14px;
   background: #131e2e;
 }
 
 .inventory-panel-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: var(--panel-gap);
+  text-align: center;
 }
 
 .inventory-panel-heading h3 {
   margin: 0 0 8px;
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .inventory-panel-heading p {
   margin: 0;
   color: #8795ab;
-  font-size: 13px;
+  font-size: 0.9375rem;
   line-height: 1.6;
 }
 
@@ -698,30 +700,35 @@
 
 .inventory-table {
   width: 100%;
-  min-width: 900px;
+  min-width: 40rem;
   border-collapse: collapse;
-  text-align: left;
+  text-align: center;
 }
 
 .inventory-table th {
-  padding: 14px 12px;
+  padding: 0.875rem clamp(0.5rem, 1vw, 0.75rem);
   border-bottom: 1px solid #34435b;
   color: #8795ab;
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 600;
   white-space: nowrap;
 }
 
 .inventory-table td {
-  padding: 16px 12px;
+  padding: 1rem clamp(0.5rem, 1vw, 0.75rem);
   border-bottom: 1px solid #263247;
   color: #e8edf5;
-  font-size: 13px;
+  font-size: 0.9375rem;
   white-space: nowrap;
 }
 
 .inventory-table tbody tr:last-child td {
   border-bottom: none;
+}
+
+.inventory-table-wrapper:focus-visible {
+  outline: 2px solid #60e0b0;
+  outline-offset: 2px;
 }
 
 .inventory-ingredient-name {
@@ -736,6 +743,7 @@
 .inventory-coverage {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 
@@ -760,7 +768,7 @@
 .inventory-coverage > span {
   min-width: 36px;
   color: #aebacd;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 
 .inventory-risk-label {
@@ -769,7 +777,7 @@
   justify-content: center;
   padding: 6px 10px;
   border-radius: 7px;
-  font-size: 11px;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 
@@ -785,12 +793,12 @@
 
 .inventory-products-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: var(--panel-gap);
 }
 
 .inventory-product-card {
-  padding: 20px;
+  padding: var(--workspace-padding);
   border: 1px solid #263247;
   border-radius: 12px;
   background: #182336;
@@ -799,36 +807,39 @@
 .inventory-product-heading {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
 .inventory-product-heading h4 {
   margin: 0;
-  font-size: 15px;
+  font-size: 1rem;
 }
 
 .inventory-product-heading > span {
   color: #8795ab;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 
 .inventory-product-demand {
   display: flex;
   align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 10px;
   margin: 24px 0;
 }
 
 .inventory-product-demand strong {
   color: #60e0b0;
-  font-size: 32px;
+  font-size: 2rem;
   line-height: 1;
 }
 
 .inventory-product-demand span {
   color: #aebacd;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 
 .inventory-product-details {
@@ -838,14 +849,16 @@
   padding-top: 14px;
   border-top: 1px solid #263247;
   color: #8795ab;
-  font-size: 12px;
+  font-size: 0.875rem;
+  text-align: center;
 }
 
 .inventory-disclaimer {
   margin: 0;
   color: #8795ab;
-  font-size: 12px;
+  font-size: 0.875rem;
   line-height: 1.8;
+  text-align: center;
 }
 
 .inventory-message,
@@ -872,37 +885,22 @@
 }
 
 @media (max-width: 768px) {
-  .inventory-workspace {
-    padding: 16px;
-  }
-
-  .inventory-controls,
-  .inventory-summary-grid,
-  .inventory-products-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .inventory-panel {
-    padding: 18px;
-  }
-
   .inventory-period {
-    flex-direction: column;
     gap: 18px;
   }
 }
 
-@media (max-width: 480px) {
-  .inventory-product-demand {
-    flex-direction: column;
-    gap: 6px;
+@media (max-width: 34rem) {
+  .inventory-controls,
+  .inventory-summary-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 /* AI Advisor */
 
 .advisor-section {
-  margin-bottom: 100px;
+  margin-bottom: var(--section-gap);
 }
 
 .advisor-workspace {
@@ -916,7 +914,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 24px 28px;
+  padding: var(--workspace-padding);
   border-bottom: 1px solid #263247;
 }
 
@@ -935,26 +933,24 @@
 
 .advisor-heading h3 {
   margin: 0 0 6px;
-  font-size: 17px;
+  font-size: 1.125rem;
 }
 
 .advisor-heading p {
   margin: 0;
   color: #8795ab;
-  font-size: 12px;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 
 .advisor-conversation {
-  padding: 24px 28px;
+  padding: var(--workspace-padding);
 }
 
 .advisor-welcome {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 220px;
   text-align: center;
 }
 
@@ -972,15 +968,15 @@
 
 .advisor-welcome h3 {
   margin: 0 0 10px;
-  font-size: 21px;
+  font-size: 1.375rem;
 }
 
 .advisor-welcome p {
-  max-width: 440px;
+  max-width: 54ch;
   margin: 0;
   color: #aebacd;
-  font-size: 13px;
-  line-height: 1.8;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .advisor-messages {
@@ -993,7 +989,7 @@
 }
 
 .advisor-message {
-  max-width: 88%;
+  max-width: min(88%, 78ch);
   padding: 16px 18px;
   border: 1px solid #263247;
   border-radius: 14px;
@@ -1013,7 +1009,7 @@
 .advisor-message-label {
   margin-bottom: 10px;
   color: #60e0b0;
-  font-size: 11px;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
@@ -1023,8 +1019,8 @@
 
 .advisor-message-content {
   color: #e8edf5;
-  font-size: 13px;
-  line-height: 1.8;
+  font-size: 1rem;
+  line-height: 1.65;
   overflow-wrap: anywhere;
 }
 
@@ -1082,31 +1078,40 @@
   padding: 0;
 }
 
-.advisor-typing {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.advisor-loading {
+  display: grid;
+  place-items: center;
   align-self: flex-start;
-  color: #aebacd;
-  font-size: 12px;
+  flex: none;
+  width: 3.5rem;
+  height: 3rem;
+  border: 1px solid #263247;
+  border-radius: 0.875rem;
+  background: #182336;
 }
 
-.advisor-loading-dot {
-  width: 9px;
-  height: 9px;
+.advisor-spinner {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 3px solid #34435b;
+  border-top-color: #60e0b0;
+  border-right-color: #60e0b0;
   border-radius: 50%;
-  background: #60e0b0;
-  animation: advisor-pulse 1.2s ease-in-out infinite;
+  animation: advisor-spin 0.85s linear infinite;
 }
 
-@keyframes advisor-pulse {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
+.advisor-loading-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 
-  50% {
-    opacity: 1;
+@keyframes advisor-spin {
+  to {
+    transform: rotate(1turn);
   }
 }
 
@@ -1114,28 +1119,31 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 0 28px 24px;
+  padding: 0 var(--workspace-padding) var(--workspace-padding);
+  text-align: center;
 }
 
 .advisor-suggestions > span {
   color: #8795ab;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 
 .advisor-suggestion-list {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 9px;
 }
 
 .advisor-suggestion {
+  min-height: 44px;
   padding: 10px 13px;
   border: 1px solid #34435b;
   border-radius: 9px;
   background: #182336;
   color: #c7d2e1;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 0.875rem;
   line-height: 1.5;
   text-align: left;
   transition: border-color 0.15s ease;
@@ -1154,14 +1162,14 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 24px 28px;
+  padding: var(--workspace-padding);
   border-top: 1px solid #263247;
   background: #131e2e;
 }
 
 .advisor-composer-label {
   color: #aebacd;
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 600;
 }
 
@@ -1176,7 +1184,7 @@
   background: #192438;
   color: #e8edf5;
   font: inherit;
-  font-size: 13px;
+  font-size: 1rem;
   line-height: 1.7;
 }
 
@@ -1204,11 +1212,12 @@
   flex-direction: column;
   gap: 5px;
   color: #8795ab;
-  font-size: 11px;
+  font-size: 0.8125rem;
 }
 
 .advisor-send-button {
   flex-shrink: 0;
+  min-height: 44px;
   padding: 12px 18px;
   border: 0;
   border-radius: 9px;
@@ -1216,7 +1225,7 @@
   color: #091710;
   cursor: pointer;
   font: inherit;
-  font-size: 13px;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
@@ -1230,7 +1239,7 @@
 }
 
 .advisor-error {
-  margin: 0 28px 20px;
+  margin: 0 var(--workspace-padding) var(--workspace-padding);
   padding: 16px;
   border: 1px solid #7c424a;
   border-radius: 10px;
@@ -1242,36 +1251,21 @@
 
 .advisor-disclaimer {
   margin: 0;
-  padding: 16px 28px 24px;
+  padding: 0 var(--workspace-padding) var(--workspace-padding);
   background: #131e2e;
   color: #8795ab;
-  font-size: 11px;
+  font-size: 0.875rem;
   line-height: 1.8;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
-  .advisor-header,
-  .advisor-conversation,
-  .advisor-composer {
-    padding: 20px 16px;
-  }
-
-  .advisor-suggestions {
-    padding: 0 16px 20px;
-  }
-
-  .advisor-disclaimer {
-    padding: 16px;
-  }
-
-  .advisor-error {
-    margin: 0 16px 16px;
-  }
-
   .advisor-message {
     max-width: 100%;
   }
+}
 
+@media (max-width: 34rem) {
   .advisor-composer-footer {
     align-items: stretch;
     flex-direction: column;
@@ -1283,7 +1277,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .advisor-loading-dot {
+  .advisor-spinner {
     animation: none;
   }
 }
@@ -1318,16 +1312,20 @@ html {
   transform: translateY(0);
 }
 
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
+.app-menu-toggle {
+  display: none;
 }
 
-.brand {
-  text-decoration: none;
+.app-menu-icon {
+  display: grid;
+  inline-size: 1.125rem;
+  gap: 0.25rem;
+}
+
+.app-menu-icon span {
+  block-size: 2px;
+  border-radius: 2px;
+  background: currentColor;
 }
 
 .app-navigation {
@@ -1335,13 +1333,14 @@ html {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 0.25rem clamp(0.75rem, 2vw, 1.5rem);
 }
 
 .app-navigation a {
   color: #aebacd;
-  font-size: 12px;
+  font-size: 1.0625rem;
   font-weight: 600;
+  text-align: center;
   text-decoration: none;
   transition: color 0.15s ease;
 }
@@ -1352,13 +1351,13 @@ html {
 }
 
 .dashboard-anchor {
-  scroll-margin-top: 96px;
+  scroll-margin-top: var(--page-gutter);
 }
 
 /* Forecast dashboard */
 
 .forecast-ui {
-  padding: 28px;
+  padding: var(--workspace-padding);
   border: 1px solid #263247;
   border-radius: 18px;
   background: #111a29;
@@ -1367,8 +1366,8 @@ html {
 .forecast-ui-controls {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  margin-bottom: 28px;
+  gap: var(--panel-gap);
+  margin-bottom: var(--panel-gap);
 }
 
 .forecast-ui-control {
@@ -1379,8 +1378,9 @@ html {
 
 .forecast-ui-control label {
   color: #aebacd;
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .forecast-ui-control select {
@@ -1393,7 +1393,7 @@ html {
   color: #e8edf5;
   color-scheme: dark;
   font: inherit;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .forecast-ui-control select:disabled {
@@ -1402,35 +1402,36 @@ html {
 }
 
 .forecast-ui-results {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--panel-gap);
 }
 
 .forecast-ui-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--panel-gap);
 }
 
 .forecast-ui-summary-card {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 22px;
+  padding: var(--workspace-padding);
   border: 1px solid #263247;
   border-radius: 12px;
   background: #182336;
+  text-align: center;
 }
 
 .forecast-ui-summary-card > span {
   color: #aebacd;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 
 .forecast-ui-summary-card strong {
   color: #e8edf5;
-  font-size: 20px;
+  font-size: clamp(1.125rem, 1.5vw, 1.625rem);
   font-weight: 750;
   line-height: 1.3;
   overflow-wrap: anywhere;
@@ -1438,48 +1439,54 @@ html {
 
 .forecast-ui-summary-card small {
   color: #8795ab;
-  font-size: 11px;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 
 .forecast-ui-panel {
   min-width: 0;
-  padding: 24px;
+  padding: var(--workspace-padding);
   border: 1px solid #263247;
   border-radius: 14px;
   background: #131e2e;
 }
 
 .forecast-ui-panel-heading {
-  margin-bottom: 24px;
+  margin-bottom: var(--panel-gap);
+  text-align: center;
 }
 
 .forecast-ui-panel-heading h3 {
   margin: 0 0 8px;
   color: #e8edf5;
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .forecast-ui-panel-heading p {
   margin: 0;
   color: #8795ab;
-  font-size: 13px;
+  font-size: 0.9375rem;
   line-height: 1.7;
 }
 
 .forecast-ui-chart {
   width: 100%;
   min-width: 0;
+  height: clamp(14rem, 34vw, 25rem);
+}
+
+.forecast-ui-chart .recharts-cartesian-axis-tick-value {
+  font-size: 0.8125rem;
 }
 
 .forecast-ui-metrics {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--panel-gap);
 }
 
 .forecast-ui-metric-card {
-  padding: 22px;
+  padding: var(--workspace-padding);
   border: 1px solid #34435b;
   border-radius: 12px;
   background: #182336;
@@ -1492,16 +1499,16 @@ html {
 
 .forecast-ui-metric-heading {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 1rem;
 }
 
 .forecast-ui-metric-heading h4 {
   margin: 0;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .forecast-ui-selected-label {
@@ -1509,7 +1516,7 @@ html {
   border-radius: 6px;
   background: #245343;
   color: #9ee8c9;
-  font-size: 10px;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
@@ -1523,24 +1530,26 @@ html {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  text-align: center;
 }
 
 .forecast-ui-metric-values span {
   color: #aebacd;
-  font-size: 12px;
+  font-size: 0.875rem;
 }
 
 .forecast-ui-metric-values strong {
   color: #e8edf5;
-  font-size: 26px;
+  font-size: clamp(1.25rem, 2vw, 1.625rem);
   line-height: 1.2;
 }
 
 .forecast-ui-hint {
   margin: 18px 0 0;
   color: #8795ab;
-  font-size: 12px;
+  font-size: 0.875rem;
   line-height: 1.7;
+  text-align: center;
 }
 
 .forecast-ui-table-wrapper {
@@ -1550,25 +1559,24 @@ html {
 
 .forecast-ui-table {
   width: 100%;
-  min-width: 560px;
   border-collapse: collapse;
-  text-align: left;
+  text-align: center;
 }
 
 .forecast-ui-table th {
-  padding: 14px 12px;
+  padding: 0.75rem clamp(0.25rem, 1vw, 0.75rem);
   border-bottom: 1px solid #34435b;
   color: #8795ab;
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 600;
-  white-space: nowrap;
 }
 
 .forecast-ui-table td {
-  padding: 16px 12px;
+  padding: 0.875rem clamp(0.25rem, 1vw, 0.75rem);
   border-bottom: 1px solid #263247;
   color: #e8edf5;
-  font-size: 13px;
+  font-size: 0.9375rem;
+  overflow-wrap: anywhere;
 }
 
 .forecast-ui-table tbody tr:last-child td {
@@ -1582,8 +1590,9 @@ html {
 .forecast-ui-disclaimer {
   margin: 0;
   color: #8795ab;
-  font-size: 12px;
+  font-size: 0.875rem;
   line-height: 1.8;
+  text-align: center;
 }
 
 /* Shared feedback */
@@ -1595,8 +1604,9 @@ html {
   border-radius: 12px;
   background: #182336;
   color: #aebacd;
-  font-size: 13px;
+  font-size: 0.9375rem;
   line-height: 1.7;
+  text-align: center;
 }
 
 .dashboard-feedback--error {
@@ -1607,63 +1617,96 @@ html {
 
 /* Responsive refinements */
 
-@media (max-width: 1024px) {
-  .app-navigation {
-    gap: 14px;
+@media (min-width: 70rem) {
+  .forecast-ui-results {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   }
 
-  .forecast-ui-summary {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .forecast-ui-results > :not(.forecast-ui-panel--chart, .forecast-ui-panel--metrics) {
+    grid-column: 1 / -1;
+  }
+
+  .forecast-ui-metrics {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 55rem) {
   .app-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.875rem var(--panel-gap);
+  }
+
+  .app-menu-toggle {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    text-align: center;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #34435b;
+    border-radius: 0.625rem;
+    background: #182336;
+    color: #e8edf5;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .app-menu-toggle[aria-expanded="true"] {
+    border-color: #60e0b0;
+    color: #60e0b0;
   }
 
   .app-navigation {
-    order: 3;
-    width: 100%;
-    justify-content: center;
-    gap: 10px 18px;
+    display: none;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    padding: 0.5rem;
+    border: 1px solid #263247;
+    border-radius: 0.75rem;
+    background: #111a29;
+  }
+
+  .app-navigation[data-open="true"] {
+    display: grid;
   }
 
   .app-navigation a {
-    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
   }
 
-  .forecast-ui {
-    padding: 16px;
+  .app-navigation a:is(:hover, :focus-visible) {
+    background: #182336;
+  }
+
+  .api-status {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 26rem) {
+  .app-menu-label {
+    display: none;
+  }
+}
+
+@media (max-width: 34rem) {
+  .app-header {
+    padding-block: 0.875rem;
   }
 
   .forecast-ui-controls,
   .forecast-ui-summary,
   .forecast-ui-metrics {
-    grid-template-columns: 1fr;
-  }
-
-  .forecast-ui-panel {
-    padding: 18px;
-  }
-
-  .forecast-ui-metric-values strong {
-    font-size: 24px;
-  }
-}
-
-@media (max-width: 480px) {
-  .forecast-ui-summary-card {
-    padding: 18px;
-  }
-
-  .forecast-ui-metric-card {
-    padding: 18px;
-  }
-
-  .forecast-ui-metric-values strong {
-    font-size: 21px;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
