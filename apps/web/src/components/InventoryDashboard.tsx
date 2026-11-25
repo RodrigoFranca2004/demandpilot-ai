@@ -115,7 +115,7 @@ function InventoryResults({
       <section className="inventory-panel">
         <div className="inventory-panel-heading">
           <div>
-            <h3>Risco de falta de ingredientes</h3>
+            <h3 id="inventory-ingredients-title">Risco de falta de ingredientes</h3>
             <p>
               Compare as quantidades necessárias com o estoque
               disponível.
@@ -128,7 +128,12 @@ function InventoryResults({
             Nenhum ingrediente encontrado para esta análise.
           </p>
         ) : (
-          <div className="inventory-table-wrapper">
+          <div
+            className="inventory-table-wrapper"
+            role="region"
+            aria-labelledby="inventory-ingredients-title"
+            tabIndex={0}
+          >
             <table className="inventory-table">
               <thead>
                 <tr>

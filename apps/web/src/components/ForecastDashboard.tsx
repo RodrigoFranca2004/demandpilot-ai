@@ -133,7 +133,7 @@ function ForecastResults({
       </div>
 
       <section
-        className="forecast-ui-panel"
+        className="forecast-ui-panel forecast-ui-panel--chart"
         aria-labelledby="forecast-chart-title"
       >
         <div className="forecast-ui-panel-heading">
@@ -155,7 +155,7 @@ function ForecastResults({
             role="img"
             aria-label={`Gráfico da demanda prevista de ${productName}. Os valores detalhados estão na tabela abaixo.`}
           >
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={chartData}
                 margin={{
@@ -174,7 +174,6 @@ function ForecastResults({
                 <XAxis
                   dataKey="date"
                   stroke="#8795ab"
-                  fontSize={11}
                   tickLine={false}
                   axisLine={false}
                   minTickGap={20}
@@ -182,11 +181,10 @@ function ForecastResults({
 
                 <YAxis
                   stroke="#8795ab"
-                  fontSize={11}
                   tickLine={false}
                   axisLine={false}
                   domain={[0, 'auto']}
-                  width={45}
+                  width="auto"
                 />
 
                 <Tooltip
@@ -214,7 +212,7 @@ function ForecastResults({
       </section>
 
       <section
-        className="forecast-ui-panel"
+        className="forecast-ui-panel forecast-ui-panel--metrics"
         aria-labelledby="forecast-metrics-title"
       >
         <div className="forecast-ui-panel-heading">

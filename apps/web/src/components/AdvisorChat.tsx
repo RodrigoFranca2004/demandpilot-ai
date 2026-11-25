@@ -153,6 +153,10 @@ export function AdvisorChat({ restaurantId }: AdvisorChatProps) {
         </div>
 
         <div className="advisor-conversation">
+          <span className="advisor-loading-status" role="status">
+            {sending ? 'Gerando resposta do assistente.' : ''}
+          </span>
+
           {messages.length === 0 ? (
             <div className="advisor-welcome">
               <div className="advisor-welcome-icon" aria-hidden="true">
@@ -197,15 +201,8 @@ export function AdvisorChat({ restaurantId }: AdvisorChatProps) {
               ))}
 
               {sending && (
-                <div
-                  className="advisor-typing"
-                  role="status"
-                >
-                  <span
-                    className="advisor-loading-dot"
-                    aria-hidden="true"
-                  />
-                  Consultando dados e gerando resposta...
+                <div className="advisor-loading" aria-hidden="true">
+                  <span className="advisor-spinner" />
                 </div>
               )}
             </div>
