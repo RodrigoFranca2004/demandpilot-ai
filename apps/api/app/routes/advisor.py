@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from google.genai import errors
+from httpx import TimeoutException
 from sqlalchemy.orm import Session
 
 from app.agents.advisor import ask_advisor
@@ -44,6 +45,12 @@ def chat_with_advisor(
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=str(exc),
+        ) from exc
+
+    except TimeoutException as exc:
+        raise HTTPException(
+            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+            detail="Gemini API request timed out",
         ) from exc
 
     except errors.APIError as exc:

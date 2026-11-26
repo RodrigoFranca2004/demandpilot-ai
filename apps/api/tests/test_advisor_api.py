@@ -4,6 +4,7 @@ from unittest.mock import Mock
 import pytest
 from fastapi.testclient import TestClient
 from google.genai import errors
+from httpx import ReadTimeout
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
@@ -226,6 +227,21 @@ def test_advisor_chat_handles_gemini_failure(
 
     assert response.status_code == 502
     assert response.json() == {"detail": "Gemini API request failed"}
+
+
+def test_advisor_chat_handles_gemini_timeout(
+    client: TestClient,
+    advisor_mock: Mock,
+) -> None:
+    advisor_mock.side_effect = ReadTimeout("Timed out")
+
+    response = client.post(
+        "/restaurants/1/advisor/chat",
+        json={"message": "Analyze demand."},
+    )
+
+    assert response.status_code == 504
+    assert response.json() == {"detail": "Gemini API request timed out"}
 
 
 def test_advisor_chat_handles_invalid_model_response(

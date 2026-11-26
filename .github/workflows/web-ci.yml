@@ -35,5 +35,8 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Test Vercel routing configuration
+        run: node --test tests/vercel-config.test.mjs
+
       - name: Build frontend
         run: npm run build

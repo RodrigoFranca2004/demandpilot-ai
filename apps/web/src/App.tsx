@@ -39,6 +39,16 @@ function App() {
           throw new Error('Backend health check failed')
         }
 
+        const payload: unknown = await response.json()
+        if (
+          typeof payload !== 'object' ||
+          payload === null ||
+          !('status' in payload) ||
+          payload.status !== 'ok'
+        ) {
+          throw new Error('Unexpected response from backend health check')
+        }
+
         if (!controller.signal.aborted) {
           setApiStatus('online')
         }
