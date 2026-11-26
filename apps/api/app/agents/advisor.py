@@ -16,6 +16,7 @@ from app.inventory.service import analyze_inventory
 from app.models import Product
 
 MAX_ROUNDS = 3
+GEMINI_REQUEST_TIMEOUT_MS = 15_000
 
 SYSTEM_INSTRUCTIONS = """
 You are DemandPilot AI, an assistant for restaurant operations.
@@ -294,7 +295,11 @@ def ask_advisor(
         raise ValueError("GEMINI_API_KEY is not configured")
 
     with genai.Client(
-        api_key=settings.gemini_api_key.get_secret_value()
+        api_key=settings.gemini_api_key.get_secret_value(),
+        http_options=types.HttpOptions(
+            timeout=GEMINI_REQUEST_TIMEOUT_MS,
+            retry_options=types.HttpRetryOptions(attempts=1),
+        ),
     ) as gemini_client:
         return run_advisor(
             client=gemini_client,

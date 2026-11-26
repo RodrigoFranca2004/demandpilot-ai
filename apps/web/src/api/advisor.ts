@@ -32,9 +32,10 @@ export async function askAdvisor(
     const errorMessages: Record<number, string> = {
       404: 'Restaurante não encontrado.',
       422: 'Não foi possível processar a pergunta. Verifique os dados disponíveis.',
-      429: 'O limite de requisições do Gemini foi atingido. Tente novamente mais tarde.',
+      429: 'O limite de requisições do assistente foi atingido. Tente novamente mais tarde.',
       502: 'O Gemini não conseguiu gerar uma resposta válida.',
       503: 'O serviço de IA está indisponível. Verifique a configuração da API.',
+      504: 'O assistente demorou para responder. Tente novamente.',
     }
 
     throw new Error(
